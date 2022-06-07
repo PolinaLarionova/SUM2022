@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include "globe.h"
+
 static VEC Geom[GRID_H][GRID_W];
 
 VOID GlobeSet( DBL R )
@@ -18,10 +19,10 @@ VOID GlobeSet( DBL R )
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
     {
-      DBL theta = i * pi / (GRID_H - 1), phi = j * 2 * pi / (GRID_W - 1);
+      DBL theta = i * PI / (GRID_H - 1), phi = j * 2 * PI / (GRID_W - 1);
 
       Geom[i][j].X = R * sin(theta) * sin(phi);
-      Geom[i][j].Y = R * cos(theta);
+      Geom[i][j].Y = 0.5 * R * cos(theta);
       Geom[i][j].Z = R * sin(theta) * cos(phi);
     }
 }
@@ -29,7 +30,7 @@ VOID GlobeSet( DBL R )
 VEC RotateZ( VEC P, DBL angle )
 {
   VEC NewP;
-  DBL a = angle * pi / 180, si = sin(a), co = cos(a);
+  DBL a = angle * PI / 180, si = sin(a), co = cos(a);
 
   NewP.X = P.X * co - P.Y * si;
   NewP.Y = P.X * si + P.Y * co;
@@ -40,7 +41,7 @@ VEC RotateZ( VEC P, DBL angle )
 VEC RotateX( VEC P, DBL angle )
 {
   VEC NewP;
-  DBL a = angle * pi / 180, si = sin(a), co = cos(a);
+  DBL a = angle * PI / 180, si = sin(a), co = cos(a);
 
   NewP.Y = P.Y * co - P.Z * si;
   NewP.Z = P.Y * si + P.Z * co;
@@ -51,7 +52,7 @@ VEC RotateX( VEC P, DBL angle )
 VEC RotateY( VEC P, DBL angle )
 {
   VEC NewP;
-  DBL a = angle * pi / 180, si = sin(a), co = cos(a);
+  DBL a = angle * PI / 180, si = sin(a), co = cos(a);
 
   NewP.Z = P.Z * co - P.X * si;
   NewP.X = P.Z * si + P.X * co;
@@ -65,6 +66,7 @@ VOID GlobeDraw( HDC hDC, INT w, INT h )
   INT i, j;
   DBL r, t = clock() / (DBL)CLOCKS_PER_SEC;
   HPEN hPen;
+  MATR m = MatrRotate(45 * t, VecSet(1, 1, 0));
 
 
   if (h > w)
@@ -75,13 +77,13 @@ VOID GlobeDraw( HDC hDC, INT w, INT h )
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
     {
-      VEC p = Geom[i][j];
+      VEC p = PointTransform(Geom[i][j], m);
 
-      p = RotateZ(p, t * 17);
-      p = RotateY(p, t * 12);
+      //p = RotateZ(p, t * 17);
+      //p = RotateY(p, t * 12);
       //p = RotateX(p, t * 10);
-      pnts[i][j].x = (INT)(p.X * r) + w / 2;
-      pnts[i][j].y = (INT)(p.Y * r) + h / 2;
+      pnts[i][j].x = (INT)(p.X * r / 2) + w / 2;
+      pnts[i][j].y = (INT)(p.Y * r / 2) + h / 2;
     }
   hPen = CreatePen(PS_SOLID, 1, RGB(4, 51, 119));
   SelectObject(hDC, GetStockObject(DC_BRUSH));

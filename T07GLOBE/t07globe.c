@@ -5,6 +5,7 @@
  */
 #include <stdlib.h>
 #include <windows.h>
+#include <time.h>
 
 #include "globe.h"
 
@@ -45,12 +46,17 @@ INT WINAPI WinMain( HINSTANCE hIstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
     CreateWindow(WND_CLASS_NAME, ":)", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 30, 30, 1000, 1000, NULL, NULL, hIstance, NULL);
 
   UpdateWindow(hWnd);
+  //TranslateMessage(&msg);
+  while (TRUE)
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+        break;
+      DispatchMessage(&msg);
+    }
+    else
+      SendMessage(hWnd, WM_TIMER, 47, 0);
 
-  while (GetMessage(&msg, NULL, 0, 0))
-  {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
   DeleteObject(hbr);
   return msg.wParam;
 } /**/
