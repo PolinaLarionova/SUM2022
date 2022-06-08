@@ -17,6 +17,11 @@
 #define D2R(A) ((A) * (PI / 180.0))
 #define Degree2Radian(a) D2R(a)
 
+#define MatrMulMatr3(A, B, C) MatrMulMatr(MatrMulMatr(A, B), C)
+#define MatrMulMatr4(A, B, C, D) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
+#define MatrMulMatr5(A, B, C, D, F) MatrMulMatr(MatrMulMatr3(A, B, C), MatrMulMatr(D, F))
+#define MatrMulMatr6(A, B, C, D, F, G) MatrMulMatr(MatrMulMatr3(A, B, C), MatrMulMatr3(D, F, G))
+
 /* Base float point types */
 typedef double DBL;
 typedef double FLT;
@@ -545,10 +550,81 @@ __inline VEC VectorTransform( VEC V, MATR M )
  */
 __inline VEC VecMulMatr( VEC V, MATR M )
 {
-  return VecSet(V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0],
-                V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1],
-                V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2]);
-} /* End of 'VecMulMatr' function */
+  DBL w = V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3];
+
+  return VecSet((V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0]) / w,
+                (V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1]) / w,
+                (V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]) / w);
+} /* End of 'PointTransform' function */
+
+/* Perspective (frustum) projection matrix setup function.
+ * ARGUMENTS:
+ *   - frustum side facets coordinates:
+ *       DBL Left, Right, Bottom, Top, Near, Far;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+__inline MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
+{
+  MATR m =
+  {
+    {
+      {      2 * Near / (Right - Left),                               0,                              0,  0},
+      {                              0,       2 * Near / (Top - Bottom),                              0,  0},
+      {(Right + Left) / (Right - Left), (Top + Bottom) / (Top - Bottom),   -(Far + Near) / (Far - Near), -1},
+      {                              0,                               0, -2 * Near * Far / (Far - Near),  0}
+    }
+  };
+
+  return m;
+} /* End of 'MatrFrustum' function */
+
+/* Orthographics projection matrix setup function.
+ * ARGUMENTS:
+ *   - orthographic box side facets coordinates:
+ *       DBL Left, Right, Bottom, Top, Near, Far;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+__inline MATR MatrOrtho( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
+{
+  MATR m =
+  {
+    {
+      {              2 / (Right - Left),                                0,                            0, 0},
+      {                               0,               2 / (Top - Bottom),                            0, 0},
+      {                               0,                                0,            -2 / (Far - Near), 0},
+      {-(Right + Left) / (Right - Left), -(Top + Bottom) / (Top - Bottom), -(Far + Near) / (Far - Near), 1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrOrtho' function */
+
+/* Matrix look-at viewer setup function.
+ * ARGUMENTS:
+ *   - viewer position, look-at point, approximate up direction:
+ *       VEC Loc, At, Up1;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+__inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
+{
+  VEC
+    Dir = VecNormalize(VecSubVec(At, Loc)),
+    Right = VecNormalize(VecCrossVec(Dir, Up1)),
+    Up = VecNormalize(VecCrossVec(Right, Dir));
+  MATR m =
+  {
+    {
+      {Right.X, Up.X, -Dir.X, 0}, {Right.Y, Up.Y, -Dir.Y, 0}, {Right.Z, Up.Z, -Dir.Z, 0},
+      {-VecDotVec(Loc, Right), -VecDotVec(Loc, Up), VecDotVec(Loc, Dir), 1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrView' function */
+
 
 #endif /* __mth_h_ */
 

@@ -64,61 +64,65 @@ VOID GlobeDraw( HDC hDC, INT w, INT h )
 {
   static POINT pnts[GRID_H][GRID_W];
   INT i, j;
-  DBL r, t = clock() / (DBL)CLOCKS_PER_SEC;
+  DBL r, Wp, Hp, Size, ProjDist, t = clock() / (DBL)CLOCKS_PER_SEC;
   HPEN hPen;
-  MATR m = MatrRotate(45 * t, VecSet(1, 1, 0));
+  MATR m;
 
+  r = (w < h ? w : h) / 2;
 
-  if (h > w)
-    r = w / 2;
+  ProjDist = Size = 1;
+  Wp = Hp = Size;
+  if (w > h)
+    Wp *= (DBL)w / h;
   else
-    r = h / 2;
+    Hp *= (DBL)h / w;
 
+  m = MatrMulMatr(MatrView(VecSet(2, 9, 6), VecSet(0, 0, 0), VecSet(0, -1, 0)), MatrFrustum(-Wp / 2, Wp / 2, -Hp / 2, Hp /2, 3, 300));
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
     {
-      VEC p = PointTransform(Geom[i][j], m);
+      VEC p = VecMulMatr(Geom[i][j], m);
 
       //p = RotateZ(p, t * 17);
       //p = RotateY(p, t * 12);
       //p = RotateX(p, t * 10);
-      pnts[i][j].x = (INT)(p.X * r / 2) + w / 2;
-      pnts[i][j].y = (INT)(p.Y * r / 2) + h / 2;
+      pnts[i][j].x = (INT)((p.X + 1) * w / 2);
+      pnts[i][j].y = (INT)((-p.Y + 1) * h / 2);
     }
   hPen = CreatePen(PS_SOLID, 1, RGB(4, 51, 119));
   SelectObject(hDC, GetStockObject(DC_BRUSH));
   SetDCBrushColor(hDC, RGB(30, 144, 255));
   SelectObject(hDC, hPen);
-  for (i = 1; i < GRID_H; i++)
-    for (j = 1; j < GRID_W; j++)
+  for (i = 0; i < GRID_H - 1; i++)
+    for (j = 0; j < GRID_W - 1; j++)
     {
       POINT pnts1[4];
       pnts1[0] = pnts[i][j];
-      pnts1[1] = pnts[i - 1][j];
-      pnts1[2] = pnts[i - 1][j - 1];
-      pnts1[3] = pnts[i][j - 1];
+      pnts1[1] = pnts[i][j + 1];
+      pnts1[2] = pnts[i + 1][j + 1];
+      pnts1[3] = pnts[i + 1][j];
 
       if ((pnts1[0].x - pnts1[1].x) * (pnts1[0].y + pnts1[1].y) +
           (pnts1[1].x - pnts1[2].x) * (pnts1[1].y + pnts1[2].y) +
           (pnts1[2].x - pnts1[3].x) * (pnts1[2].y + pnts1[3].y) +
-          (pnts1[3].x - pnts1[0].x) * (pnts1[3].y + pnts1[0].y) < 0)
+          (pnts1[3].x - pnts1[0].x) * (pnts1[3].y + pnts1[0].y) > 0)
           Polygon(hDC, pnts1, 4);
     }
   SelectObject(hDC, GetStockObject(DC_BRUSH));
   SetDCBrushColor(hDC, RGB(0, 0, 0));
-  for (i = 1; i < GRID_H; i++)
-    for (j = 1; j < GRID_W; j++)
+  for (i = 0; i < GRID_H - 1; i++)
+    for (j = 0; j < GRID_W - 1; j++)
     {
       POINT pnts1[4];
       pnts1[0] = pnts[i][j];
-      pnts1[1] = pnts[i - 1][j];
-      pnts1[2] = pnts[i - 1][j - 1];
-      pnts1[3] = pnts[i][j - 1];
+      pnts1[1] = pnts[i][j + 1];
+      pnts1[2] = pnts[i + 1][j + 1];
+      pnts1[3] = pnts[i + 1][j];
 
       if ((pnts1[0].x - pnts1[1].x) * (pnts1[0].y + pnts1[1].y) +
           (pnts1[1].x - pnts1[2].x) * (pnts1[1].y + pnts1[2].y) +
           (pnts1[2].x - pnts1[3].x) * (pnts1[2].y + pnts1[3].y) +
-          (pnts1[3].x - pnts1[0].x) * (pnts1[3].y + pnts1[0].y) >= 0)
+          (pnts1[3].x - pnts1[0].x) * (pnts1[3].y + pnts1[0].y) <= 0)
           Polygon(hDC, pnts1, 4);
     }
   DeleteObject(hPen);
