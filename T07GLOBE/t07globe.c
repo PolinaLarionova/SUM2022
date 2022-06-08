@@ -94,6 +94,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     GlobeSet(1.0);
     ReleaseDC(hWnd, hDC);
     hBm = NULL;
+    GLB_TimerInit();
+    return 0;
 
   case WM_SIZE:
     w = LOWORD(lParam);
@@ -115,6 +117,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_TIMER:
     /*Fon*/
+    GLB_TimerResponse();
     SelectObject(hMemDC, GetStockObject(DC_PEN));
     SetDCPenColor(hMemDC, RGB(255, 255, 255));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));

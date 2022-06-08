@@ -23,7 +23,7 @@ VOID GlobeSet( DBL R )
 
       Geom[i][j].X = R * sin(theta) * sin(phi);
       Geom[i][j].Y = 0.5 * R * cos(theta);
-      Geom[i][j].Z = R * sin(theta) * cos(phi);
+      Geom[i][j].Z = 3 * R * sin(theta) * cos(phi);
     }
 }
 
@@ -77,7 +77,9 @@ VOID GlobeDraw( HDC hDC, INT w, INT h )
   else
     Hp *= (DBL)h / w;
 
-  m = MatrMulMatr(MatrView(VecSet(2, 9, 6), VecSet(0, 0, 0), VecSet(0, -1, 0)), MatrFrustum(-Wp / 2, Wp / 2, -Hp / 2, Hp /2, 3, 300));
+  m = MatrMulMatr(MatrView(VecSet(10, 5, 10), VecSet(0, 0, 0), VecSet(0, 1, 0)), MatrFrustum(-Wp / 2, Wp / 2, -Hp / 2, Hp /2, 3, 300));
+  m = MatrMulMatr3(MatrRotateX(30 * sin(GLB_Time * 3)), MatrRotateY(100 * GLB_Time), m);
+
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
     {
@@ -89,7 +91,7 @@ VOID GlobeDraw( HDC hDC, INT w, INT h )
       pnts[i][j].x = (INT)((p.X + 1) * w / 2);
       pnts[i][j].y = (INT)((-p.Y + 1) * h / 2);
     }
-  hPen = CreatePen(PS_SOLID, 1, RGB(4, 51, 119));
+  hPen = CreatePen(PS_SOLID, 1, RGB(153, 255, 51));
   SelectObject(hDC, GetStockObject(DC_BRUSH));
   SetDCBrushColor(hDC, RGB(30, 144, 255));
   SelectObject(hDC, hPen);
