@@ -7,7 +7,7 @@
 #ifndef __pl6_h_
 #define __pl6_h_
 
-#include "anim/rnd/rnd.h"
+#include "unit/units.h"
 
 #endif /* __pl6_h_ */
 

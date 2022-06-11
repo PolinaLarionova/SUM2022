@@ -22,8 +22,8 @@ VOID GlobeSet( DBL R )
       DBL theta = i * PI / (GRID_H - 1), phi = j * 2 * PI / (GRID_W - 1);
 
       Geom[i][j].X = R * sin(theta) * sin(phi);
-      Geom[i][j].Y = 0.5 * R * cos(theta);
-      Geom[i][j].Z = 3 * R * sin(theta) * cos(phi);
+      Geom[i][j].Y = 1* R * cos(theta);
+      Geom[i][j].Z = 1 * R * sin(theta) * cos(phi);
     }
 }
 

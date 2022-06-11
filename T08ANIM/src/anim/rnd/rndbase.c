@@ -12,6 +12,8 @@ VOID PL6_RndInit( HWND hWnd )
 
   PL6_hRndWnd = hWnd;
   PL6_hRndBmFrame = NULL;
+  PL6_RndProjPoints = NULL;
+  PL6_RndProjPointsSize = 0;
   hDC = GetDC(hWnd);
   PL6_hRndDCFrame = CreateCompatibleDC(hDC);
   PL6_RndCamSet(VecSet(0, 0, 10), VecSet(0, 0, 0), VecSet(0, 1, 0));
@@ -23,6 +25,9 @@ VOID PL6_RndClose( VOID )
   if (PL6_hRndBmFrame != NULL)
     DeleteObject(PL6_hRndBmFrame);
   DeleteDC(PL6_hRndDCFrame);
+  if (PL6_RndProjPoints != NULL)
+    free(PL6_RndProjPoints), PL6_RndProjPoints = NULL;
+  PL6_RndProjPointsSize = 0;
 }
 
 VOID PL6_RndResize( INT W, INT H )

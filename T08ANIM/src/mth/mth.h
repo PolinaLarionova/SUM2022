@@ -9,6 +9,7 @@
 #include <math.h>
 #include <windows.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 /* Pi math constant */

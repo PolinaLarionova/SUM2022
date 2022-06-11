@@ -52,6 +52,9 @@ INT WINAPI WinMain( HINSTANCE hIstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
     CreateWindow(WND_CLASS_NAME, ":)", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 30, 30, 1000, 1000, NULL, NULL, hIstance, NULL);
 
   UpdateWindow(hWnd);
+
+  PL6_AnimUnitAdd(PL6_UnitCreateCow());
+
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
@@ -82,11 +85,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 {
   HDC hDC;
   PAINTSTRUCT ps;
-  //VEC p1, p2, p;
-  //MATR m;
-  //POINT pnts[2];
-  static pl6PRIM Pr1, Pr2;
-
 
   switch (Msg)
   {
@@ -103,23 +101,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_CREATE:
     SetTimer(hWnd, 29, 30, NULL);
     PL6_RndInit(hWnd);
-    //ZeroMemory(Pr2, sizeof(pl6PRIM));
-    PL6_RndPrimLoad(&Pr2, "bmp/models/cow.obj");
-    Pr2.Trans = MatrScale(VecSet1(0.1));
-
-    PL6_RndPrimCreate(&Pr1, 4, 6);
-    Pr1.V[0].P = VecSet(0, 0, 0);
-    Pr1.V[1].P = VecSet(2, 0, 0);
-    Pr1.V[2].P = VecSet(0, 2, 0);
-    Pr1.V[3].P = VecSet(2, 2, 0);
-
-    Pr1.I[0] = 0;
-    Pr1.I[1] = 1;
-    Pr1.I[2] = 2;
-
-    Pr1.I[3] = 2;
-    Pr1.I[4] = 1;
-    Pr1.I[5] = 3;
     return 0;
 
   case WM_SIZE:
@@ -137,7 +118,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     PL6_RndStart();
     PL6_RndCamSet(VecSet(0, 0, 6), VecSet(0, 0, 0), VecSet(0, 1, 0));
 
-    PL6_RndPrimDraw(&Pr2, MatrRotateY(30 * clock() / 1000.0));
+    PL6_AnimRender();
+
     PL6_RndEnd();
     hDC = GetDC(hWnd);
     PL6_RndCopyFrame(hDC);
@@ -149,6 +131,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_DESTROY:
     KillTimer(hWnd, 29);
+    PL6_AnimClose();
     PL6_RndClose();
     PostQuitMessage(0);
     return 0;

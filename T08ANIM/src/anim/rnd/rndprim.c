@@ -34,26 +34,33 @@ VOID PL6_RndPrimFree( pl6PRIM *Pr )
 VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
 {
   INT i;
-  POINT *pnts;
   MATR M = MatrMulMatr3(Pr->Trans, World, PL6_RndMatrVP);
-  if((pnts = malloc(sizeof(POINT) * Pr->NumOfV)) == NULL)
-    return;
+
+  if (PL6_RndProjPointsSize < Pr->NumOfV)
+  {
+    if (PL6_RndProjPoints != NULL)
+      free(PL6_RndProjPoints);
+    PL6_RndProjPointsSize = 0;
+    if ((PL6_RndProjPoints = malloc(Pr->NumOfV * sizeof(POINT))) == NULL)
+      return;
+    PL6_RndProjPointsSize = Pr->NumOfV;
+  }
+
   for (i = 0; i < Pr->NumOfV; i++)
   {
     VEC p = VecMulMatr(Pr->V[i].P, M);
 
-    pnts[i].x = (INT)((p.X + 1) * PL6_RndFrameW / 2);
-    pnts[i].y = (INT)((-p.Y + 1) * PL6_RndFrameH / 2);
+    PL6_RndProjPoints[i].x = (INT)((p.X + 1) * PL6_RndFrameW / 2);
+    PL6_RndProjPoints[i].y = (INT)((-p.Y + 1) * PL6_RndFrameH / 2);
   }
 
   for (i = 0; i < Pr->NumOfI; i += 3)
   {
-    MoveToEx(PL6_hRndDCFrame, pnts[Pr->I[i]].x, pnts[Pr->I[i]].y, NULL);
-    LineTo(PL6_hRndDCFrame, pnts[Pr->I[i + 1]].x, pnts[Pr->I[i + 1]].y);
-    LineTo(PL6_hRndDCFrame, pnts[Pr->I[i + 2]].x, pnts[Pr->I[i + 2]].y);
-    LineTo(PL6_hRndDCFrame, pnts[Pr->I[i]].x, pnts[Pr->I[i]].y);
+    MoveToEx(PL6_hRndDCFrame, PL6_RndProjPoints[Pr->I[i]].x, PL6_RndProjPoints[Pr->I[i]].y, NULL);
+    LineTo(PL6_hRndDCFrame, PL6_RndProjPoints[Pr->I[i + 1]].x, PL6_RndProjPoints[Pr->I[i + 1]].y);
+    LineTo(PL6_hRndDCFrame, PL6_RndProjPoints[Pr->I[i + 2]].x, PL6_RndProjPoints[Pr->I[i + 2]].y);
+    LineTo(PL6_hRndDCFrame, PL6_RndProjPoints[Pr->I[i]].x, PL6_RndProjPoints[Pr->I[i]].y);
   }
-  free(pnts);
 }
 
 BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )

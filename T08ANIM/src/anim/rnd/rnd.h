@@ -17,6 +17,9 @@ extern HDC PL6_hRndDCFrame;     /* Work window memory device context  */
 extern HBITMAP PL6_hRndBmFrame; /* Work window background bitmap handle */
 extern INT PL6_RndFrameW, PL6_RndFrameH; /* Work window size */
 
+extern POINT *PL6_RndProjPoints; /* Buffer for store projection points for primitive rendering */
+extern INT PL6_RndProjPointsSize; /* Projection storage buffer size */
+
 extern DBL
   PL6_RndProjSize,  /* Project plane fit square */
   PL6_RndProjDist,  /* Distance to project plane from viewer (near) */
@@ -54,6 +57,7 @@ VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World );
 VOID PL6_RndPrimFree( pl6PRIM *Pr );
 BOOL PL6_RndPrimCreate( pl6PRIM *Pr, INT NoofV, INT NoofI );
 BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName );
+
 
 #endif /* __rnd_h_ */
 

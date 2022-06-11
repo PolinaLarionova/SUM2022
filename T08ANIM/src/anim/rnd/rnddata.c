@@ -12,6 +12,9 @@ HDC PL6_hRndDCFrame;     /* Work window memory device context  */
 HBITMAP PL6_hRndBmFrame; /* Work window background bitmap handle */
 INT PL6_RndFrameW, PL6_RndFrameH; /* Work window size */
 
+POINT *PL6_RndProjPoints; /* Buffer for store projection points for primitive rendering */
+INT PL6_RndProjPointsSize; /* Projection storage buffer size */
+
 DBL
   PL6_RndProjSize = 0.1,  /* Project plane fit square */
   PL6_RndProjDist = 0.1,  /* Distance to project plane from viewer (near) */
