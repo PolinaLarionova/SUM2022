@@ -17,18 +17,18 @@ typedef struct
 static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
   Uni->Pos = VecSet(0, 0, 0);
+  PL6_RndPrimLoad(&Uni->Cow, "bmp/models/cow.obj");
 }
 
 static VOID PL6_UnitResponse( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
-  //Uni->Pos += Ani->DeltaTime * 2.4;
-  PL6_RndPrimLoad(&Uni->Cow, "bmp/models/cow.obj");
+  //Uni->Pos.Z += Ani->DeltaTime * 2.4;
   Uni->Cow.Trans = MatrScale(VecSet1(0.1)); 
 }
 
 static VOID PL6_UnitRender( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
-  PL6_RndPrimDraw(&Uni->Cow, MatrRotateY(30 * clock() / 1000.0));
+  PL6_RndPrimDraw(&Uni->Cow, /*MatrMulMatr(MatrRotateY(30 * Ani->Time), */ MatrTranslate(Uni->Pos));
 }
 
 static VOID PL6_UnitClose( pl6UNIT_COW *Uni, pl6ANIM *Ani )

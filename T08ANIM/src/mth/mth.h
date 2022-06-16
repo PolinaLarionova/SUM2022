@@ -8,7 +8,6 @@
 
 #include <math.h>
 #include <windows.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -204,9 +203,9 @@ __inline MATR MatrRotateY( DBL AngleInDegree )
 {
   DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
-  return MatrSet(s, 0, c, 0,
+  return MatrSet(c, 0, s, 0,
                  0, 1, 0, 0,
-                 c, 0, -s, 0,
+                 -s, 0, c, 0,
                  0, 0, 0, 1);
 }/* End of 'MatrRotateY' function */
 

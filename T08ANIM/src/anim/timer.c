@@ -14,7 +14,7 @@ static UINT64
     TimePerSec,   /* Timer resolution */
     FrameCounter; /* Frames counter */
 
-VOID TimerInit( VOID )
+VOID PL6_TimerInit( VOID )
 {
   LARGE_INTEGER t;
 
@@ -28,7 +28,7 @@ VOID TimerInit( VOID )
   PauseTime = 0;
 }
 
-VOID TimerResponse( VOID )
+VOID PL6_TimerResponse( VOID )
 {
   LARGE_INTEGER t;
 

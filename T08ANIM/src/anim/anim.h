@@ -11,6 +11,9 @@
 
 #define PL6_MAX_UNITS 3000
 
+#define PL6_GET_JOYSTIC_AXIS(A) \
+   (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## max - jc.w ## A ## min) - 1)
+
 #define UNIT_BASE_FIELDS \
   VOID (*Init)( pl6UNIT *Uni, pl6ANIM *Ani );      \
   VOID (*Close)( pl6UNIT *Uni, pl6ANIM *Ani );     \
@@ -27,12 +30,27 @@ typedef struct tagpl6ANIM
   pl6UNIT *Units[PL6_MAX_UNITS];
   INT NumOfUnits;
 
+  /* Timer */
   DBL
     GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
     Time, DeltaTime,             /* Time with pause and interframe interval */
     FPS;                         /* Frames per second value */
   BOOL
     IsPause;                     /* Pause flag */
+
+  /* keyboard */
+  BYTE Keys[256];                /* the state of the keys on the current frame */
+  BYTE KeysClick[256];           /* signs of a single keystroke */
+
+  /* mouse */
+  INT Mx, My, Mz, Mdx, Mdy, Mdz;
+
+  /* Joystick */
+  BYTE
+    JBut[32], JButClick[32]; /* Joystick button states */
+  INT JPov;                               /* Joystick point-of-view control [-1,0..7] */
+  DBL
+    JX, JY, JZ, JR;                       /* Joystick axes */
 
 } pl6ANIM;
 
@@ -49,11 +67,14 @@ VOID PL6_AnimCopyFrame( HDC hDC );
 VOID PL6_AnimRender( VOID );
 VOID PL6_AnimFlipFullScreen( VOID );
 VOID PL6_AnimExit( VOID );
-VOID TimerInit( VOID );
-VOID TimerResponse( VOID );
+VOID PL6_TimerInit( VOID );
+VOID PL6_TimerResponse( VOID );
+VOID PL6_AnimInputInit( VOID );
+VOID PL6_AnimInputResponse( VOID );
 pl6UNIT * PL6_AnimUnitCreate( INT Size );
 
 extern pl6ANIM PL6_Anim;
+extern INT PL6_MouseWheel;
 
 #endif /* __anim_h_ */
 

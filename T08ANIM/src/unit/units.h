@@ -9,6 +9,8 @@
 
 #include "anim/anim.h"
 pl6UNIT * PL6_UnitCreateCow( VOID );
+pl6UNIT * PL6_UnitCreateBall( VOID );
+pl6UNIT * PL6_UnitCreateControl( VOID );
 
 #endif /* __unit_h_ */
 

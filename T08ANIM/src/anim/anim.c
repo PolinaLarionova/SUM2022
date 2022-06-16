@@ -4,6 +4,8 @@
  * PURPOSE    : 3D animation project.
  *              .
  */
+#include <stdio.h>
+
 #include "anim.h"
 
 pl6ANIM PL6_Anim;
@@ -19,7 +21,8 @@ VOID PL6_AnimInit( HWND hWnd )
   PL6_Anim.hWnd = hWnd;
   PL6_RndInit(hWnd);
   PL6_Anim.hDC = PL6_hRndDCFrame;
-  TimerInit();
+  PL6_TimerInit();
+  PL6_AnimInputInit();
 }
 
 VOID PL6_AnimClose( VOID )
@@ -51,17 +54,18 @@ VOID PL6_AnimCopyFrame( HDC hDC )
 VOID PL6_AnimRender( VOID )
 {
   INT i;
-  CHAR Buf[102];
+
+  PL6_TimerResponse();
+  PL6_AnimInputResponse();
 
   for (i = 0; i < PL6_Anim.NumOfUnits; i++)
     PL6_Anim.Units[i]->Response(PL6_Anim.Units[i], &PL6_Anim);
-  TimerResponse();
 
   PL6_RndStart();
-  SetBkColor(PL6_hRndDCFrame, RGB(0, 0, 0));
-  TextOut(PL6_hRndDCFrame, 100, 100, Buf, wsprintf(Buf, "%lf", PL6_Anim.FPS));
+
   for (i = 0; i < PL6_Anim.NumOfUnits; i++)
     PL6_Anim.Units[i]->Render(PL6_Anim.Units[i], &PL6_Anim);
+
   PL6_RndEnd();
 }
 

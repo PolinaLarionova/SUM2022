@@ -54,6 +54,7 @@ INT WINAPI WinMain( HINSTANCE hIstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   UpdateWindow(hWnd);
 
   PL6_AnimUnitAdd(PL6_UnitCreateCow());
+  PL6_AnimUnitAdd(PL6_UnitCreateControl());
 
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -100,39 +101,50 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_CREATE:
     SetTimer(hWnd, 29, 30, NULL);
-    PL6_RndInit(hWnd);
+    PL6_AnimInit(hWnd);
     return 0;
 
   case WM_SIZE:
-    PL6_RndResize(LOWORD(lParam), HIWORD(lParam));
+    PL6_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
 
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    PL6_RndCopyFrame(hDC);
+    PL6_AnimCopyFrame(hDC);
     EndPaint(hWnd, &ps);
     return 0;
 
+  case WM_MOUSEWHEEL:
+    PL6_MouseWheel += (SHORT)HIWORD(wParam);
+  return 0;
+
   case WM_TIMER:
-    PL6_RndStart();
     PL6_RndCamSet(VecSet(0, 0, 6), VecSet(0, 0, 0), VecSet(0, 1, 0));
 
     PL6_AnimRender();
 
-    PL6_RndEnd();
     hDC = GetDC(hWnd);
-    PL6_RndCopyFrame(hDC);
+    PL6_AnimCopyFrame(hDC);
     ReleaseDC(hWnd, hDC);
     return 0;
 
   case WM_ERASEBKGND:
     return 1;
 
+  
+
+  case WM_LBUTTONDOWN:
+    SetCapture(hWnd);
+  return 0;
+
+  case WM_LBUTTONUP:
+    ReleaseCapture();
+  return 0;
+
   case WM_DESTROY:
     KillTimer(hWnd, 29);
     PL6_AnimClose();
-    PL6_RndClose();
     PostQuitMessage(0);
     return 0;
   }
