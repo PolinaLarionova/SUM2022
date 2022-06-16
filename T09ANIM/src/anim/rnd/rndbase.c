@@ -159,6 +159,11 @@ VOID PL6_RndCopyFrame( VOID )
 VOID PL6_RndCamSet( VEC Loc, VEC At, VEC Up )
 {
   PL6_RndMatrView = MatrView(Loc, At, Up);
+  PL6_RndCamLoc = Loc;
+  PL6_RndCamAt = At;
+  PL6_RndCamRight = VecSet(PL6_RndMatrView.A[0][0], PL6_RndMatrView.A[1][0], PL6_RndMatrView.A[2][0]);
+  PL6_RndCamUp = VecSet(PL6_RndMatrView.A[0][1], PL6_RndMatrView.A[1][1], PL6_RndMatrView.A[2][1]);
+  PL6_RndCamDir = VecSet(-PL6_RndMatrView.A[0][2], -PL6_RndMatrView.A[1][2], -PL6_RndMatrView.A[2][2]);
   PL6_RndMatrVP = MatrMulMatr(PL6_RndMatrView, PL6_RndMatrProj);
 } /* End of 'PL6_RndCamSet' function */
 

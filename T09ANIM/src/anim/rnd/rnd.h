@@ -16,16 +16,22 @@
 #include "def.h"
 #include "res/rndres.h"
 
-extern HWND PL6_hRndWnd;        /* Work window handle */
-extern HDC PL6_hRndDC;     /* Work window memory device context  */
+extern HWND PL6_hRndWnd;                 /* Work window handle */
+extern HDC PL6_hRndDC;                   /* Work window memory device context  */
 extern HGLRC PL6_hRndGLRC;               /* Work OpenGL rendering context */
 extern INT PL6_RndFrameW, PL6_RndFrameH; /* Work window size */
 
 extern DBL
-  PL6_RndProjSize,  /* Project plane fit square */
-  PL6_RndProjDist,  /* Distance to project plane from viewer (near) */
+  PL6_RndProjSize,     /* Project plane fit square */
+  PL6_RndProjDist,     /* Distance to project plane from viewer (near) */
   PL6_RndProjFarClip;  /* Distance to project far clip plane (far) */
 
+extern VEC
+  PL6_RndCamLoc,    /* Camera location */
+  PL6_RndCamAt;     /* Camera 'look at' point */
+  PL6_RndCamRight,  /* Camera right direction */
+  PL6_RndCamUp,     /* Camera up direction */
+  PL6_RndCamDir;    /* Camera forward direction */
 
 extern MATR
   PL6_RndMatrView, /* View coordinate system matrix */
@@ -54,14 +60,15 @@ typedef struct tagpl6PRIM
 {
   pl6PRIM_TYPE Type; /* Primitive type */
   INT
-    VA,        /* Vertex array OpenGL id */
-    VBuf,      /* Vertex buffer OpenGL id */
-    IBuf,      /* Index buffer OpenGL id */
-    NumOfV,    /* Number of vertexes */
-    NumOfI,    /* Number of indexes */
-    NumOfElements; /* Number of draw points */
-  MATR Trans;  /* Transformation matrix */
+    VA,             /* Vertex array OpenGL id */
+    VBuf,           /* Vertex buffer OpenGL id */
+    IBuf,           /* Index buffer OpenGL id */
+    NumOfV,         /* Number of vertexes */
+    NumOfI,         /* Number of indexes */
+    NumOfElements;  /* Number of draw points */
+  MATR Trans;       /* Transformation matrix */
   VEC MinBB, MaxBB; /* Minimum and maximum bound box cooerdinates */
+  INT MtlNo;        /* Material number in material array */
 } pl6PRIM;
 
 /* Rendering system initialization function.

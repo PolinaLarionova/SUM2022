@@ -28,7 +28,7 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_BALL *Uni, pl6ANIM *Ani )
 {
-  Uni->Pos = VecSet(3, 0, 0);
+  Uni->Pos = VecSet(0, 3, 0);
   PL6_RndPrimCreateSphere(&Uni->Ball, Uni->Pos, 1, GRID_W, GRID_H);
 } /* End of 'PL6_UnitInit' function */
 

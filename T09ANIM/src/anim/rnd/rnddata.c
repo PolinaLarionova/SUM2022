@@ -17,6 +17,12 @@ DBL
   PL6_RndProjDist = 0.1,  /* Distance to project plane from viewer (near) */
   PL6_RndProjFarClip = 300;  /* Distance to project far clip plane (far) */
 
+VEC
+  PL6_RndCamLoc,    /* Camera location */
+  PL6_RndCamAt;     /* Camera 'look at' point */
+  PL6_RndCamRight,  /* Camera right direction */
+  PL6_RndCamUp,     /* Camera up direction */
+  PL6_RndCamDir;    /* Camera forward direction */
 
 MATR
   PL6_RndMatrView, /* View coordinate system matrix */

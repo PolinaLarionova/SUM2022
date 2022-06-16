@@ -64,6 +64,44 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 
   if (Ani->KeysClick['V'])
     PL6_AnimFlipFullScreen();
+ /*
+  if (Ani->KeysClick[VK_CONTROL])
+  {
+    FLT Dist, cosT, sinT, plen, cosP, sinP, Azimuth, Elevator, 
+
+    Dist = VecLen(VecSubVec(VG4_RndCamAt, VG4_RndCamLoc));
+
+    cosT = (VG4_RndCamLoc.Y - VG4_RndCamAt.Y) / Dist;
+    sinT = sqrt(1 – cosT * cosT);
+
+    plen = Dist * sinT;
+    cosP = (VG4_RndCamLoc.Z - VG4_RndCamAt.Z) / plen;
+    sinP = (VG4_RndCamLoc.X - VG4_RndCamAt.X) / plen;
+
+    Azimuth = R2D(atan2(sinP, cosP));
+    Elevator = R2D(atan2(sinT, cosT));
+
+    Azimuth += Ani->GlobalDeltaTime *
+      (-30 * Ani->Keys[VK_LBUTTON] * Ani->Mdx +
+       47 * (Ani->Keys[VK_LEFT] - Ani->Keys[VK_RIGHT]));
+
+    Elevator += Ani->GlobalDeltaTime *
+      (-30 * Ani->Keys[VK_LBUTTON] * Ani->Mdy + 
+       47 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]));
+
+    Dist += Ani->GlobalDeltaTime *
+      (1 * Ani->Mdz +
+      (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR]));
+
+    if (Elevator < 0.01)
+      Elevator = 0.01
+    else if (Elevator > 179.99)
+      Elevator = 179.99;
+
+    PointTransform(VecSet(0, Dist, 0),
+               MatrMulMatr(MatrRotateX(Elevator),
+                           MatrRotateY(Azimuth)));
+  }*/
 
   Uni->CamLoc =
     VecAddVec(Uni->CamLoc,

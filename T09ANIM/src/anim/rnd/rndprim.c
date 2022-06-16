@@ -116,20 +116,31 @@ VOID PL6_RndPrimFree( pl6PRIM *Pr )
  */
 VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
 {
-  MATR WVP = MatrMulMatr3(Pr->Trans, World, PL6_RndMatrVP);
   INT loc;
   INT RndProgId;
-  INT gl_prim_type = Pr->Type == PL6_RND_PRIM_LINES ? GL_LINE :
+  INT gl_prim_type = Pr->Type == PL6_RND_PRIM_LINES ? GL_LINES :
                      Pr->Type == PL6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
-                     Pr->Type == PL6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP : GL_POINT;
+                     Pr->Type == PL6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP : GL_POINTS;
+  MATR
+    w = MatrMulMatr(Pr->Trans, World),
+    winv = MatrTranspose(MatrInverse(w)),
+    wvp = MatrMulMatr(w, PL6_RndMatrVP);
 
-  glLoadMatrixf(WVP.A[0]);
+  glLoadMatrixf(wvp.A[0]);
 
-  RndProgId = PL6_RndShaders[0].ProgId;
+  RndProgId = PL6_RndMtlApply(Pr->MtlNo);
 
   glUseProgram(RndProgId);
+
+    /* Pass render uniforms */
   if ((loc = glGetUniformLocation(RndProgId, "MatrWVP")) != -1)
-    glUniformMatrix4fv(loc, 1, FALSE, WVP.A[0]);
+    glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  if ((loc = glGetUniformLocation(RndProgId, "MatrW")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, w.A[0]);
+  if ((loc = glGetUniformLocation(RndProgId, "MatrWInv")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
+  if ((loc = glGetUniformLocation(RndProgId, "CamLoc")) != -1)
+    glUniform3fv(loc, 1, &PL6_RndCamLoc.X);
   if ((loc = glGetUniformLocation(RndProgId, "Time")) != -1)
     glUniform1f(loc, PL6_Anim.Time);
 
@@ -162,8 +173,7 @@ VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
 BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )
 {
   FILE *F;
-  INT noofv = 0, noofi = 0, size, i;
-  VEC L = VecNormalize(VecSet(1, 1, 1));
+  INT noofv = 0, noofi = 0, size;
   static CHAR Buf[1000];
   pl6VERTEX *V;
   INT *Ind;
@@ -227,6 +237,7 @@ BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )
 
   PL6_RndPrimTriMeshEvaNormals(V, noofv, Ind, noofi);
   /* Fake illumination */
+  /*
   for (i = 0; i < noofv; i++)
   {
     FLT nl = VecDotVec(V[i].N, L), t;
@@ -235,6 +246,7 @@ BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )
     nl = nl < 0.1 ? 0.1 : nl;
     V[i].C = Vec4Set(nl * t, nl * t, nl * t, 1);
   }
+  */
   PL6_RndPrimCreate(Pr, PL6_RND_PRIM_TRIMESH, V, noofv, Ind, noofi);
   free(V);
   fclose(F);
@@ -265,7 +277,7 @@ BOOL PL6_RndPrimCreateGrid( pl6PRIM *Pr, INT SplitW, INT SplitH, pl6VERTEX *V )
 
   for(k = 0, i = 0; i < SplitH - 1; i++)
   {
-    for(j = 0; j < SplitW - 1; j++)
+    for(j = 0; j < SplitW; j++)
     {
       Ind[k++] = (i + 1) * SplitW + j;
       Ind[k++] = (i + 0) * SplitW + j;
@@ -379,13 +391,13 @@ BOOL PL6_RndPrimCreateSphere( pl6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH 
   for (theta = 0, i = 0; i < SplitH; i++, theta += PI / (SplitH - 1))
     for (phi = 0, j = 0; j < SplitW; j++, phi += 2 * PI / (SplitW - 1))
     {
-      V[(SplitH - i - 1) * SplitW + j].N = VecSet(C.X + sin(theta) * sin(phi), 
-                                                  C.Y + cos(theta), 
-                                                  C.Z + sin(theta) * cos(phi));
+      V[(SplitH - i - 1) * SplitW + j].N = VecSet(sin(theta) * sin(phi), 
+                                                  cos(theta), 
+                                                  sin(theta) * cos(phi));
       V[(SplitH - i - 1) * SplitW + j].P = VecSet(C.X + R * sin(theta) * sin(phi), 
                                                   C.Y + R * cos(theta), 
                                                   C.Z + R * sin(theta) * cos(phi));
-      V[(SplitH - i - 1) * SplitW + j].C = Vec4Set2((DBL)(i / SplitH), 1);
+      V[(SplitH - i - 1) * SplitW + j].C = Vec4Set2((DBL)i / SplitH, 1);
     }
   PL6_RndPrimGridEvaNormals(SplitW, SplitH, V);
   k = PL6_RndPrimCreateGrid(Pr, SplitW, SplitH, V);
