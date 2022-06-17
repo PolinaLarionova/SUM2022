@@ -125,7 +125,6 @@ VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
     w = MatrMulMatr(Pr->Trans, World),
     winv = MatrTranspose(MatrInverse(w)),
     wvp = MatrMulMatr(w, PL6_RndMatrVP);
-
   glLoadMatrixf(wvp.A[0]);
 
   RndProgId = PL6_RndMtlApply(Pr->MtlNo);
@@ -236,17 +235,6 @@ BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )
     }
 
   PL6_RndPrimTriMeshEvaNormals(V, noofv, Ind, noofi);
-  /* Fake illumination */
-  /*
-  for (i = 0; i < noofv; i++)
-  {
-    FLT nl = VecDotVec(V[i].N, L), t;
-
-    t = 0.5 + pow(-1, i) * 0.5;
-    nl = nl < 0.1 ? 0.1 : nl;
-    V[i].C = Vec4Set(nl * t, nl * t, nl * t, 1);
-  }
-  */
   PL6_RndPrimCreate(Pr, PL6_RND_PRIM_TRIMESH, V, noofv, Ind, noofi);
   free(V);
   fclose(F);
@@ -397,9 +385,7 @@ BOOL PL6_RndPrimCreateSphere( pl6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH 
       V[(SplitH - i - 1) * SplitW + j].P = VecSet(C.X + R * sin(theta) * sin(phi), 
                                                   C.Y + R * cos(theta), 
                                                   C.Z + R * sin(theta) * cos(phi));
-      V[(SplitH - i - 1) * SplitW + j].C = Vec4Set2((DBL)i / SplitH, 1);
     }
-  PL6_RndPrimGridEvaNormals(SplitW, SplitH, V);
   k = PL6_RndPrimCreateGrid(Pr, SplitW, SplitH, V);
   free(V);
   return k;

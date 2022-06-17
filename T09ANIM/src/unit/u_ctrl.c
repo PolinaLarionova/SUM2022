@@ -10,9 +10,7 @@
 typedef struct
 {
   UNIT_BASE_FIELDS;
-  VEC CamLoc, CamDir;
   DBL Speed;
-  pl6PRIM Pr;
 } pl6UNIT_CONTROL;
 
 /* Unit_Control initialization function.
@@ -25,20 +23,9 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 {
-  pl6VERTEX v[] =
-  {
-    {{0, 0, 0}, {0}, {0}, {0, 0.7, 0, 1}},
-    {{1, 0, 0}, {0}, {0}, {0, 0.4, 0, 1}},
-    {{1, 0, 1}, {0}, {0}, {0, 0.7, 0, 1}},
-    {{0, 0, 1}, {0}, {0}, {0, 0.4, 0, 1}},
-  };
-  INT ind[] = {0, 1, 2, 0, 2, 3};
-
-
-  PL6_RndPrimCreate(&Uni->Pr, PL6_RND_PRIM_TRIMESH, v, 4, ind, 6);
-  Uni->CamLoc = VecSet(0, 0, 6);
-  Uni->CamDir = VecNormalize(VecSet(0, 0, -1));
+  PL6_RndCamSet(VecSet(2, 2, 2), VecSet(1, 1, 1), VecSet(0, 1, 0));
   Uni->Speed = 1;
+  PL6_RndFntInit();
 }/* End of 'PL6_UnitInit' function */
 
 /* Unit_Control inter frame events handle function.
@@ -64,19 +51,23 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 
   if (Ani->KeysClick['V'])
     PL6_AnimFlipFullScreen();
- /*
-  if (Ani->KeysClick[VK_CONTROL])
+
+  if (Ani->Keys[VK_CONTROL])
   {
-    FLT Dist, cosT, sinT, plen, cosP, sinP, Azimuth, Elevator, 
+    FLT Dist, cosT, sinT, plen, cosP, sinP, Azimuth, Elevator, Hp, Wp, sx, sy;
+    VEC dv;
 
-    Dist = VecLen(VecSubVec(VG4_RndCamAt, VG4_RndCamLoc));
+    Dist = VecLen(VecSubVec(PL6_RndCamAt, PL6_RndCamLoc));
 
-    cosT = (VG4_RndCamLoc.Y - VG4_RndCamAt.Y) / Dist;
-    sinT = sqrt(1 – cosT * cosT);
+    if (Dist < 0.0001)
+      Dist = 0.0001;
+
+    cosT = (PL6_RndCamLoc.Y - PL6_RndCamAt.Y) / Dist;
+    sinT = sqrt(1 - cosT * cosT);
 
     plen = Dist * sinT;
-    cosP = (VG4_RndCamLoc.Z - VG4_RndCamAt.Z) / plen;
-    sinP = (VG4_RndCamLoc.X - VG4_RndCamAt.X) / plen;
+    cosP = (PL6_RndCamLoc.Z - PL6_RndCamAt.Z) / plen;
+    sinP = (PL6_RndCamLoc.X - PL6_RndCamAt.X) / plen;
 
     Azimuth = R2D(atan2(sinP, cosP));
     Elevator = R2D(atan2(sinT, cosT));
@@ -90,47 +81,38 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
        47 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]));
 
     Dist += Ani->GlobalDeltaTime *
-      (1 * Ani->Mdz +
+      (1 * -Ani->Mdz +
       (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR]));
 
-    if (Elevator < 0.01)
-      Elevator = 0.01
-    else if (Elevator > 179.99)
-      Elevator = 179.99;
+    if (Elevator < 0.1)
+      Elevator = 0.1;
+    else if (Elevator > 179)
+      Elevator = 179;
 
-    PointTransform(VecSet(0, Dist, 0),
-               MatrMulMatr(MatrRotateX(Elevator),
-                           MatrRotateY(Azimuth)));
-  }*/
+    Wp = PL6_RndProjSize;
+    Hp = PL6_RndProjSize;
 
-  Uni->CamLoc =
-    VecAddVec(Uni->CamLoc,
-      VecMulNum(Uni->CamDir, Ani->GlobalDeltaTime * Uni->Speed *
-        (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN])));
+    if (Ani->W > Ani->H)
+      Wp *= (FLT)Ani->W / Ani->H;
+    else
+      Hp *= (FLT)Ani->H / Ani->W;
 
-  Uni->CamLoc =
-    VecAddVec(Uni->CamLoc,
-      VecMulNum(Uni->CamDir, Ani->GlobalDeltaTime * Uni->Speed * Ani->Mdz));
+    sx = Ani->Keys[VK_RBUTTON] * -Ani->Mdx * Wp / Ani->W * Dist / PL6_RndProjDist;
+    sy = Ani->Keys[VK_RBUTTON] * Ani->Mdy * Hp / Ani->H * Dist / PL6_RndProjDist;
 
-  Uni->CamLoc =
-    PointTransform(Uni->CamLoc,
-      MatrRotateY(Ani->Keys[VK_LBUTTON] *
-        Ani->GlobalDeltaTime * 45 * Ani->Mdx));
+    dv = VecAddVec(VecMulNum(PL6_RndCamRight, sx),
+                   VecMulNum(PL6_RndCamUp, sy));
 
-  Uni->CamLoc =
-    PointTransform(Uni->CamLoc,
-      MatrRotateX(Ani->Keys[VK_LBUTTON] *
-       Ani->GlobalDeltaTime * 45 * Ani->Mdy));
+    PL6_RndCamAt = VecAddVec(PL6_RndCamAt, dv);
+    /*PL6_RndCamLoc = VecAddVec(PL6_RndCamLoc, dv);*/
 
-    Uni->CamLoc = 
-      VecAddVec(Uni->CamLoc,
-        VecMulNum(Uni->CamDir, Ani->GlobalDeltaTime * Uni->Speed * Ani->JX));
-
-    Uni->CamLoc = 
-      VecAddVec(Uni->CamLoc,
-        VecMulNum(VecNormalize(VecSet(0, 1, 0)), Ani->GlobalDeltaTime * Uni->Speed * Ani->JR));
-
-   PL6_RndCamSet(Uni->CamLoc, VecSet(0, 0, 0), VecSet(0, 1, 0)); 
+    PL6_RndCamSet(PointTransform(VecSet(0, Dist, 0),
+                                 MatrMulMatr3(MatrRotateX(Elevator),
+                                            MatrRotateY(Azimuth),
+                                            MatrTranslate(PL6_RndCamAt))),
+                                 PL6_RndCamAt,
+                                 VecSet(0, 1, 0));
+  }
 }/* End of 'PL6_UnitResponse' function */
 
 /* Unit_Control render function.
@@ -144,15 +126,10 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 static VOID PL6_UnitRender( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 {
   static CHAR Buf[102];
-  //INT i, j;
 
   sprintf(Buf, "%lf (%f %f %f %f ) %i", Ani->FPS, Ani->JX, Ani->JY, Ani->JZ, Ani->JR, Ani->JPov);
-  SetWindowText(Ani->hWnd, Buf);
-
-  /*for(i = -15; i < 15; i++)
-    for(j = -15; j < 15; j++)
-      PL6_RndPrimDraw(&Uni->Pr, MatrTranslate(VecSet(i, 0, j))); */
-
+  //SetWindowText(Ani->hWnd, Buf);
+  PL6_RndFntDraw(Buf, VecSet(2, 2, 2), 1);
 }/* End of 'PL6_UnitRender' function */
 
 /* Unit_Control deinitialization function.
@@ -165,7 +142,7 @@ static VOID PL6_UnitRender( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitClose( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 {
-  PL6_RndPrimFree(&Uni->Pr);
+  PL6_RndFntClose("bin/fonts/arial.g3df");
 }/* End of 'PL6_UnitClose' function */
 
 /* Unit_Control create function.

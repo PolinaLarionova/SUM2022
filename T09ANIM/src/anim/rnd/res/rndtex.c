@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../rnd.h"
+#include "pl6.h"
 
 /***
  * Texture stock handle

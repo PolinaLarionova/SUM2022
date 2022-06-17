@@ -1,6 +1,6 @@
 /* FILE       : u_land.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 15.06.2022
+ * LAST UPDATE: 17.06.2022
  * PURPOSE    : 3D animation project.
  *              
  */
@@ -23,14 +23,15 @@ typedef struct
  * RETURNS:
  *       (BOOL) TRUE if succes, FALSE otherwise.
  */
-static VOID PL6_LandLoad( pl6PRIM *Land )
+static VOID PL6_LandLoad( pl6UNIT_LAND *Uni, pl6PRIM *Land )
 {
   HBITMAP hBm;
   BITMAP bm;
   pl6VERTEX *V;
   INT w, h, x, y;
+  pl6MATERIAL mtl = PL6_RndMtlGetDef();
 
-  if ((hBm = LoadImage(NULL, "bin/heights/dem.bmp", IMAGE_BITMAP, 0, 0,
+  if ((hBm = LoadImage(NULL, "bin/heights/hf.bmp", IMAGE_BITMAP, 0, 0,
                        LR_LOADFROMFILE | LR_CREATEDIBSECTION)) != NULL)
   {
     GetObject(hBm, sizeof(bm), &bm);
@@ -49,10 +50,16 @@ static VOID PL6_LandLoad( pl6PRIM *Land )
           V[y * w + x].P = VecSet(x / (w - 1.0),
                                   hgt / 255.0,
                                   1 - y / (h - 1.0));
-          V[y * w + x].C = Vec4Set(hgt / 255.0, hgt / 255.0, hgt / 255.0, 1);
+          V[y * w + x].T = Vec2Set(x / (w - 1.0), 1 - y / (h - 1.0));
         }
       PL6_RndPrimGridEvaNormals(w, h, V);
       PL6_RndPrimCreateGrid(Land, w, h, V);
+
+
+      strcpy(mtl.Name, "Landscape Material");
+      //mtl.ShdNo = PL6_RndShdAdd("landscape");
+      mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/hftex.bmp");
+      Uni->Land.MtlNo = PL6_RndMtlAdd(&mtl);
       free(V);
     }
     DeleteObject(hBm);
@@ -70,8 +77,8 @@ static VOID PL6_LandLoad( pl6PRIM *Land )
  */
 static VOID PL6_UnitInit( pl6UNIT_LAND *Uni, pl6ANIM *Ani )
 {
-  Uni->Pos = VecSet(-0.5, -0.6, -0.5);
-  PL6_LandLoad(&Uni->Land);
+  Uni->Pos = VecSet(-0.5, -0.05, -0.5);
+  PL6_LandLoad(Uni, &Uni->Land);
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_Land render function.

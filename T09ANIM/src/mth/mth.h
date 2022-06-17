@@ -1,6 +1,6 @@
 /* FILE NAME: mth.h
  * PROGRAMMER: PL6
-* DATE: 07.06.2022
+* DATE: 17.06.2022
 * PURPOSE: 3D math implementation module.
  */
 #ifndef __mth_h_
@@ -16,6 +16,7 @@
 
 /* Degrees to radians conversion */
 #define D2R(A) ((A) * (PI / 180.0))
+#define R2D(A) ((A) * (180.0 / PI))
 #define Degree2Radian(a) D2R(a)
 
 #define COM_MIN(A, B) ((A) < (B) ? (A) : (B))
@@ -287,8 +288,8 @@ __inline MATR MatrRotateX( FLT AngleInDegree )
   FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
   return MatrSet(1, 0, 0, 0,
-                 0, c, -s, 0,
-                 0, s, c, 0,
+                 0, c, s, 0,
+                 0, -s, c, 0,
                  0, 0, 0, 1);
 }/* End of 'MatrRotateX' function */
 
@@ -303,9 +304,9 @@ __inline MATR MatrRotateY( FLT AngleInDegree )
 {
   FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
-  return MatrSet(c, 0, s, 0,
+  return MatrSet(c, 0, -s, 0,
                  0, 1, 0, 0,
-                 -s, 0, c, 0,
+                 s, 0, c, 0,
                  0, 0, 0, 1);
 }/* End of 'MatrRotateY' function */
 
@@ -320,8 +321,8 @@ __inline MATR MatrRotateZ( FLT AngleInDegree )
 {
   FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
-  return MatrSet(c, -s, 0, 0,
-                 s, c, 0, 0,
+  return MatrSet(c, s, 0, 0,
+                 -s, c, 0, 0,
                  0, 0, 1, 0,
                  0, 0, 0, 1);
 }/* End of 'MatrRotateZ' function */
@@ -469,19 +470,19 @@ __inline MATR MatrInverse( MATR M )
 
 
   r.A[0][1] =
-    +MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
+    -MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                    M.A[2][1], M.A[2][2], M.A[2][3],
                    M.A[3][1], M.A[3][2], M.A[3][3]) / det;
   r.A[1][1] =
-    -MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
+    +MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                    M.A[2][0], M.A[2][2], M.A[2][3],
                    M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][1] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
+    -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                    M.A[2][0], M.A[2][1], M.A[2][3],
                    M.A[3][0], M.A[3][1], M.A[3][3]) / det;
   r.A[3][1] =
-    -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
+    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                    M.A[2][0], M.A[2][1], M.A[2][2],
                    M.A[3][0], M.A[3][1], M.A[3][2]) / det;
 
@@ -490,33 +491,33 @@ __inline MATR MatrInverse( MATR M )
     +MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                    M.A[1][1], M.A[1][2], M.A[1][3],
                    M.A[3][1], M.A[3][2], M.A[3][3]) / det;
-  r.A[1][1] =
+  r.A[1][2] =
     -MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                    M.A[1][0], M.A[1][2], M.A[1][3],
                    M.A[3][0], M.A[3][2], M.A[3][3]) / det;
-  r.A[2][1] =
+  r.A[2][2] =
     +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                    M.A[1][0], M.A[1][1], M.A[1][3],
                    M.A[3][0], M.A[3][1], M.A[3][3]) / det;
-  r.A[3][1] =
+  r.A[3][2] =
     -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                    M.A[1][0], M.A[1][1], M.A[1][2],
                    M.A[3][0], M.A[3][1], M.A[3][2]) / det;
 
-  r.A[0][2] =
-    +MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
+  r.A[0][3] =
+    -MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                    M.A[1][1], M.A[1][2], M.A[1][3],
                    M.A[2][1], M.A[2][2], M.A[2][3]) / det;
-  r.A[1][1] =
-    -MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
+  r.A[1][3] =
+    +MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                    M.A[1][0], M.A[1][2], M.A[1][3],
                    M.A[2][0], M.A[2][2], M.A[2][3]) / det;
-  r.A[2][1] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
+  r.A[2][3] =
+    -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                    M.A[1][0], M.A[1][1], M.A[1][3],
                    M.A[2][0], M.A[2][1], M.A[2][3]) / det;
-  r.A[3][1] =
-    -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
+  r.A[3][3] =
+    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                    M.A[1][0], M.A[1][1], M.A[1][2],
                    M.A[2][0], M.A[2][1], M.A[2][2]) / det;
   return r;

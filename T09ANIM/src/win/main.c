@@ -122,8 +122,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   return 0;
 
   case WM_TIMER:
-    PL6_RndCamSet(VecSet(0, 0, 6), VecSet(0, 0, 0), VecSet(0, 1, 0));
-
     PL6_AnimRender();
     PL6_AnimCopyFrame();
     return 0;

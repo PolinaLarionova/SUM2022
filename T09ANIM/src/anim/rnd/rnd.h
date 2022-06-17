@@ -1,6 +1,6 @@
 /* FILE       : rnd.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 09.06.2022
+ * LAST UPDATE: 17.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -28,7 +28,7 @@ extern DBL
 
 extern VEC
   PL6_RndCamLoc,    /* Camera location */
-  PL6_RndCamAt;     /* Camera 'look at' point */
+  PL6_RndCamAt,     /* Camera 'look at' point */
   PL6_RndCamRight,  /* Camera right direction */
   PL6_RndCamUp,     /* Camera up direction */
   PL6_RndCamDir;    /* Camera forward direction */
@@ -70,6 +70,19 @@ typedef struct tagpl6PRIM
   VEC MinBB, MaxBB; /* Minimum and maximum bound box cooerdinates */
   INT MtlNo;        /* Material number in material array */
 } pl6PRIM;
+
+extern INT *PL6_RndShadersAddonI;
+/***
+ * Primitive collection handle
+ ***/
+
+/* Primitive collection data type */
+typedef struct tagpl6PRIMS
+{
+  INT NumOfPrims; /* Number of primitives in array */  
+  pl6PRIM *Prims; /* Array of primitives */
+  MATR Trans;     /* Common transformation matrix */
+} pl6PRIMS;
 
 /* Rendering system initialization function.
  * ARGUMENTS: None.
@@ -226,6 +239,88 @@ VOID PL6_RndPrimGridEvaNormals( INT SplitW, INT SplitH, pl6VERTEX *V );
  *     (BOOL) TRUE if success, FALSE otherwise
  */
 BOOL PL6_RndPrimCreateSphere( pl6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH );
+
+/* Add shader to stock from file function.
+ * ARGUMENTS:
+ *   - shader file path to load:
+ *       CHAR *ShaderFileNamePrefix;
+ * RETURNS:
+ *   (INT) new shader stock number.
+ */
+INT PL6_RndShdAdd( CHAR *ShaderFileNamePrefix );
+
+/* Create array of primitives function.
+* ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       pl6PRIMS *Prs;
+ *   - number of primitives to be add:
+ *       INT NumOfPrims;
+ * RETURNS:
+ *   (BOOL) TRUE if successful, FALSE otherwise.
+ */
+BOOL PL6_RndPrimsCreate( pl6PRIMS *Prs, INT NumOfPrims );
+
+/* Delete array of primitives function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       pl6PRIMS *Prs;
+ * RETURNS: None.
+ */
+VOID PL6_RndPrimsFree( pl6PRIMS *Prs );
+
+/* Draw array of primitives function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       pl6PRIMS *Prs;
+ *   - global transformation matrix:
+ *       MATR World;
+ * RETURNS: None.
+ */
+VOID PL6_RndPrimsDraw( pl6PRIMS *Prs, MATR World );
+
+/* Load array of primitives from .G3DM file function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       pl6PRIMS *Prs;
+ *   - file name:
+ *       CHAR *FileName;
+ * RETURNS:
+ *   (BOOL) TRUE if successful, FALSE otherwise.
+ */
+BOOL PL6_RndPrimsLoad( pl6PRIMS *Prs, CHAR *FileName );
+
+/* Load font from .G3DF file function.
+ * ARGUMENTS:
+ *   - font file name:
+ *       CHAR *FileName;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL PL6_RndFntLoad( CHAR *FileName );
+
+/* Init font subsystem function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndFntInit( VOID );
+
+/* Deinit font subsystem function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndFntClose( CHAR *FileName );
+
+/* Draw string function.
+ * ARGUMENTS:
+ *   - string to draw:
+ *       CHAR *Str;
+ *   - draw position:
+ *       VEC Pos;
+ *   = font size:
+ *      FLT Size;
+ * RETURNS: None.
+ */
+VOID PL6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
 
 #endif /* __rnd_h_ */
 

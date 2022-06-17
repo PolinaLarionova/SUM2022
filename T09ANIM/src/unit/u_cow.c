@@ -1,6 +1,6 @@
 /* FILE       : u_cow.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 10.06.2022
+ * LAST UPDATE: 17.06.2022
  * PURPOSE    : 3D animation project.
  *              
  */
@@ -26,9 +26,16 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
+  pl6MATERIAL mtl;
   Uni->V = VecSet(-1, 0, 0);
   Uni->Pos = VecSet(0, 0, 0);
   PL6_RndPrimLoad(&Uni->Cow, "bin/models/cow.obj");
+
+  mtl = PL6_RndMtlGetDef();
+  strcpy(mtl.Name, "Cow Material");
+  //mtl.ShdNo = PL6_RndShdAdd("cow");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/cow1.g24");
+  Uni->Cow.MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_Cow inter frame events handle function.
@@ -48,7 +55,6 @@ static VOID PL6_UnitResponse( pl6UNIT_COW *Uni, pl6ANIM *Ani )
   Uni->Cow.Trans = MatrMulMatr(MatrScale(VecSet1(0.1)), MatrRotateY(R));
   Uni->V = VectorTransform(Uni->V, MatrRotateY(Uni->Rot));
   Uni->Pos = VecAddVec(Uni->Pos, VecMulNum(Uni->V, Ani->JY * Ani->DeltaTime));
-  PL6_RndCamSet(VecAddVec(Uni->Pos, VecMulMatr(VecSet(-5, 2, 0), MatrRotateY(R))), Uni->Pos, VecSet(0, 1, 0));
 } /* End of 'PL6_UnitResponse' function */
 
 /* Unit_Cow render function.

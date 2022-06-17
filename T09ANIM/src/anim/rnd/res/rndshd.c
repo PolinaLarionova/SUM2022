@@ -28,7 +28,7 @@ static VOID PL6_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text )
 {
   FILE *F;
 
-  if ((F = fopen("bin/shaders/shd{30}vg4.log", "a")) == NULL)
+  if ((F = fopen("bin/shaders/shd{30}pl6.log", "a")) == NULL)
     return;
   fprintf(F, "%s : %s\n%s\n\n", FileNamePrefix, ShaderName, Text);
   fclose(F);
@@ -255,7 +255,7 @@ VOID PL6_RndShdUpdate( VOID )
 VOID PL6_RndShdInit( VOID )
 {
   PL6_RndShdAdd("default");
-} /* End of 'VG4_RndShdInit' function */
+} /* End of 'PL6_RndShdInit' function */
 
 /* Shader storage deinitialize function.
  * ARGUMENTS: None.

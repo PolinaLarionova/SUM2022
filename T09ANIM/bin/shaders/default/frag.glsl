@@ -5,8 +5,11 @@ layout(location = 0) out vec4 OutColor;
 
 in vec4 DrawColor;
 in vec3 DrawPos;
+in vec3 DrawNormal;
+in vec2 DrawTexCoord;
 
 uniform float Time;
+
 uniform vec3 CamLoc;
 uniform vec3 Ka, Kd, Ks;
 uniform float Ph;
@@ -17,7 +20,7 @@ uniform bool IsTexture0;
 vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
 {
   // Incident vector
-  vec3 V = normalize(P – CamLoc);
+  vec3 V = normalize(P - CamLoc);
   // Correct normal direction
   N = faceforward(N, V, N);
 
@@ -30,22 +33,24 @@ vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
   {
     vec3 dif = Kd * nl * LColor;
     if (IsTexture0)
-      dif *= texture(Texture0, DrawTexCoord).rgb
+      dif *= texture(Texture0, DrawTexCoord).rgb;
     color += dif;
 
     // specular
-    vec3 r = reflect(V, N);
+    vec3 R = reflect(V, N);
     float rl = dot(R, L);
     if (rl > 0)
       color += LColor * Ks * pow(rl, Ph);
   }
-
+  //return N;
   return color;
 }
 
 void main( void )
 {
   vec3 N = normalize(DrawNormal);
-  vec3 L = noprmalize(vec3(1, 1, 1));  // light source
-  OutColor = vec4(Shade(DrawPos, N, L1, vec3(1, 1, 1)), 1);
+  vec3 L = normalize(vec3(1 * sin(Time), 1, 1));  // light source
+  OutColor = vec4(Shade(DrawPos, N, L, vec3(1, 1, 1)), 1);
+  //OutColor = vec4(texture(Texture0, DrawTexCoord).rgb, 1);
+  //OutColor = vec4(DrawTexCoord.xyx, 1);
 }

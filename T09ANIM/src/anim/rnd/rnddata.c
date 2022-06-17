@@ -1,6 +1,6 @@
 /* FILE       : rnddata.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 09.06.2022
+ * LAST UPDATE: 17.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -19,7 +19,7 @@ DBL
 
 VEC
   PL6_RndCamLoc,    /* Camera location */
-  PL6_RndCamAt;     /* Camera 'look at' point */
+  PL6_RndCamAt,     /* Camera 'look at' point */
   PL6_RndCamRight,  /* Camera right direction */
   PL6_RndCamUp,     /* Camera up direction */
   PL6_RndCamDir;    /* Camera forward direction */
@@ -28,5 +28,7 @@ MATR
   PL6_RndMatrView, /* View coordinate system matrix */
   PL6_RndMatrProj, /* Projection coordinate system matrix */
   PL6_RndMatrVP;   /* Stored (View * Proj) matrix */
+
+INT *PL6_RndShadersAddonI;
 
 /* END OF 'rnddata.c' FILE */
