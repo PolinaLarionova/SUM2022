@@ -27,6 +27,7 @@ typedef struct
 static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
   pl6MATERIAL mtl;
+
   Uni->V = VecSet(-1, 0, 0);
   Uni->Pos = VecSet(0, 0, 0);
   PL6_RndPrimLoad(&Uni->Cow, "bin/models/cow.obj");
@@ -34,7 +35,7 @@ static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
   mtl = PL6_RndMtlGetDef();
   strcpy(mtl.Name, "Cow Material");
   //mtl.ShdNo = PL6_RndShdAdd("cow");
-  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/cow1.g24");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/cow3.g24");
   Uni->Cow.MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 

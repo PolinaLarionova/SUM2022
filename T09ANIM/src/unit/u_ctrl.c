@@ -104,7 +104,7 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
                    VecMulNum(PL6_RndCamUp, sy));
 
     PL6_RndCamAt = VecAddVec(PL6_RndCamAt, dv);
-    /*PL6_RndCamLoc = VecAddVec(PL6_RndCamLoc, dv);*/
+    PL6_RndCamLoc = VecAddVec(PL6_RndCamLoc, dv);
 
     PL6_RndCamSet(PointTransform(VecSet(0, Dist, 0),
                                  MatrMulMatr3(MatrRotateX(Elevator),

@@ -28,8 +28,16 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_BALL *Uni, pl6ANIM *Ani )
 {
-  Uni->Pos = VecSet(0, 3, 0);
-  PL6_RndPrimCreateSphere(&Uni->Ball, Uni->Pos, 1, GRID_W, GRID_H);
+  pl6MATERIAL mtl;
+
+  Uni->Pos = VecSet(0, 0, 0);
+  PL6_RndPrimCreateSphere(&Uni->Ball, Uni->Pos, 50, GRID_W, GRID_H);
+
+  mtl = PL6_RndMtlGetDef();
+  strcpy(mtl.Name, "Sphere Material");
+  mtl.ShdNo = PL6_RndShdAdd("sky");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/sky2.g24");
+  Uni->Ball.MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_Ball inter frame events handle function.

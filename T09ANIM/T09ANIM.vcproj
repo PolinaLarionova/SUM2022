@@ -298,6 +298,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\unit\u_g3dm.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\unit\u_land.c"
 					>
 				</File>

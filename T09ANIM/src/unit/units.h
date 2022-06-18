@@ -13,6 +13,13 @@ pl6UNIT * PL6_UnitCreateBall( VOID );
 pl6UNIT * PL6_UnitCreateControl( VOID );
 pl6UNIT * PL6_UnitCreateLand( VOID );
 
+/* Unit_G3dm create function.
+ * ARGUMENTS:
+ *   - none;
+ * RETURNS: (pl6UNIT) unit.
+ */
+pl6UNIT * PL6_UnitCreateG3dm( VOID );
+
 #endif /* __unit_h_ */
 
 /* END OF 'unit.h' FILE */

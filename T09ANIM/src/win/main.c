@@ -56,6 +56,7 @@ INT WINAPI WinMain( HINSTANCE hIstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   PL6_AnimUnitAdd(PL6_UnitCreateCow());
   PL6_AnimUnitAdd(PL6_UnitCreateLand());
   PL6_AnimUnitAdd(PL6_UnitCreateBall());
+  PL6_AnimUnitAdd(PL6_UnitCreateG3dm());
   PL6_AnimUnitAdd(PL6_UnitCreateControl());
 
   while (TRUE)

@@ -71,7 +71,7 @@ typedef struct tagpl6PRIM
   INT MtlNo;        /* Material number in material array */
 } pl6PRIM;
 
-extern INT *PL6_RndShadersAddonI;
+extern INT PL6_RndShadersAddonI[2];
 /***
  * Primitive collection handle
  ***/

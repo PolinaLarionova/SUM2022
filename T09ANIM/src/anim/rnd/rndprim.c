@@ -209,7 +209,7 @@ BOOL PL6_RndPrimLoad( pl6PRIM *Pr, CHAR *FileName )
 
       sscanf(Buf + 2, "%lf%lf%lf", &x, &y, &z);
       V[noofv].P = VecSet(x, y, z);
-      V[noofv++].C = Vec4Set2(0.5 + pow(-1,noofv) * 0.5, 1);
+      V[noofv++].T = Vec2Set(x, z);
     }
     else if (Buf[0] == 'f' && Buf[1] == ' ')
     {
@@ -385,6 +385,7 @@ BOOL PL6_RndPrimCreateSphere( pl6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH 
       V[(SplitH - i - 1) * SplitW + j].P = VecSet(C.X + R * sin(theta) * sin(phi), 
                                                   C.Y + R * cos(theta), 
                                                   C.Z + R * sin(theta) * cos(phi));
+      V[i * SplitW + j].T = Vec2Set(j / (SplitW - 1.0), i / (SplitH - 1.0));
     }
   k = PL6_RndPrimCreateGrid(Pr, SplitW, SplitH, V);
   free(V);

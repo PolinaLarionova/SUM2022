@@ -1,5 +1,5 @@
 /**/
-#version 420
+#version 450
 
 layout(location = 0) out vec4 OutColor;
 
@@ -49,8 +49,9 @@ vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
 void main( void )
 {
   vec3 N = normalize(DrawNormal);
-  vec3 L = normalize(vec3(1 * sin(Time), 1, 1));  // light source
-  OutColor = vec4(Shade(DrawPos, N, L, vec3(1, 1, 1)), 1);
-  //OutColor = vec4(texture(Texture0, DrawTexCoord).rgb, 1);
-  //OutColor = vec4(DrawTexCoord.xyx, 1);
+  vec3 L = normalize(vec3(1 * sin(Time), 1, 1));
+  if (!IsTexture0)
+   OutColor = vec4(0.7, 0.7, 0.7, 1);
+  else  
+   OutColor = vec4(Shade(DrawPos, N, L, vec3(1, 1, 1)), 1);
 }
