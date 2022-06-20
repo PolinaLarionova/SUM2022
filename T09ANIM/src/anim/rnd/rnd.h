@@ -1,6 +1,6 @@
 /* FILE       : rnd.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 17.06.2022
+ * LAST UPDATE: 20.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -72,6 +72,7 @@ typedef struct tagpl6PRIM
 } pl6PRIM;
 
 extern INT PL6_RndShadersAddonI[2];
+
 /***
  * Primitive collection handle
  ***/
@@ -321,6 +322,95 @@ VOID PL6_RndFntClose( CHAR *FileName );
  * RETURNS: None.
  */
 VOID PL6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
+
+/* Initialize render target system function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetInit( VOID );
+
+/* Deinitialize render target system function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetClose( VOID );
+
+/* Create render target function.
+ * ARGUMENTS:
+ *   - target frame buffer size:
+ *       INT W, H;
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetCreate( INT W, INT H );
+
+/* Free render target system function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetFree( VOID );
+
+/* Start frame through target system function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetStart( VOID );
+
+/* Finalize frame through target system function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetEnd( VOID );
+
+/* Resize render target frame buffer function.
+ * ARGUMENTS:
+ *   - target frame buffer size:
+ *       INT W, H;
+ * RETURNS: None.
+ */
+VOID PL6_RndTargetResize( INT W, INT H );
+
+/***
+ * Light system global data
+ ***/
+
+/* Shadow map size*/
+#define PL6_RND_SHADOW_MAP_SIZE 256
+
+/* Shadow frame buffer identifier */
+extern INT PL6_RndShadowFBO;
+
+/* Shadow map texture identifier */
+extern INT PL6_RndShadowTexId;
+
+/* Shadow map light source matrix */
+extern MATR PL6_RndShadowMatr;
+
+/* Flag for shadow drawing rendering pass */
+extern BOOL PL6_RndShadowPassFlag;
+
+/* Light source direction */
+extern VEC PL6_RndLightDir;
+
+/* Light source color */
+extern VEC PL6_RndLightColor;
+
+/* Light system initialization function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndLightInit( VOID );
+
+/* Light system deinitialization function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndLightClose( VOID );
+
+/* Draw shadow map function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID PL6_RndLightShadow( VOID );
 
 #endif /* __rnd_h_ */
 

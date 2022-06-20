@@ -8,6 +8,9 @@ in vec3 DrawPos;
 in vec3 DrawNormal;
 in vec2 DrawTexCoord;
 
+uniform vec3 LightDir;
+uniform vec3 LightColor;
+
 uniform float Time;
 
 uniform vec3 CamLoc;
@@ -16,6 +19,11 @@ uniform float Ph;
 
 layout(binding = 0) uniform sampler2D Texture0;
 uniform bool IsTexture0;
+
+layout(binding = 8) uniform sampler2D ShadowMap;
+uniform mat4 ShadowMatr;
+
+uniform float AddonI0, AddonI1;
 
 vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
 {
@@ -48,10 +56,16 @@ vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
 
 void main( void )
 {
-  vec3 N = normalize(DrawNormal);
-  vec3 L = normalize(vec3(1 * sin(Time), 1, 1));
-  if (!IsTexture0)
-   OutColor = vec4(0.7, 0.7, 0.7, 1);
-  else  
-   OutColor = vec4(Shade(DrawPos, N, L, vec3(1, 1, 1)), 1);
+  float sh = 1;
+  vec4 p = ShadowMatr * vec4(DrawPos, 1) / 2 + 0.5;
+
+  if (p.x >= 0 && p.x <= 1 &&
+      p.y >= 0 && p.y <= 1 &&
+      p.z >= 0 && p.z <= 1)
+  {
+    sh = 0.2;
+  }
+
+  vec3 N = normalize(DrawNormal);    
+  OutColor = sh * vec4(Shade(DrawPos, N, LightDir, LightColor), 1);
 }

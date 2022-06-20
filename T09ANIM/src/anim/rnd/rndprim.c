@@ -1,6 +1,6 @@
 /* FILE       : rndprim.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 09.06.2022
+ * LAST UPDATE: 18.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -142,6 +142,23 @@ VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
     glUniform3fv(loc, 1, &PL6_RndCamLoc.X);
   if ((loc = glGetUniformLocation(RndProgId, "Time")) != -1)
     glUniform1f(loc, PL6_Anim.Time);
+  if ((loc = glGetUniformLocation(RndProgId, "AddonI0")) != -1)
+    glUniform1f(loc, PL6_RndShadersAddonI[0]);
+  if ((loc = glGetUniformLocation(RndProgId, "AddonI1")) != -1)
+    glUniform1f(loc, PL6_RndShadersAddonI[1]);
+
+  /* Light/shadow specific data */
+  if ((loc = glGetUniformLocation(RndProgId, "LightDir")) != -1)
+    glUniform3fv(loc, 1, &PL6_RndLightDir.X);
+  if ((loc = glGetUniformLocation(RndProgId, "LightColor")) != -1)
+    glUniform3fv(loc, 1, &PL6_RndLightColor.X);
+  if ((loc = glGetUniformLocation(RndProgId, "ShadowMatr")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, PL6_RndShadowMatr.A[0]);
+  if ((loc = glGetUniformLocation(RndProgId, "IsShadowPass")) != -1)
+    glUniform1i(loc, PL6_RndShadowPassFlag);
+
+  glActiveTexture(GL_TEXTURE0 + 8);
+  glBindTexture(GL_TEXTURE_2D, PL6_RndShadowTexId);
 
   /* make the vertex array active */
   glBindVertexArray(Pr->VA);
@@ -350,6 +367,8 @@ VOID PL6_RndPrimGridEvaNormals( INT SplitW, INT SplitH, pl6VERTEX *V )
       P01->N = VecAddVec(P01->N, N);
       P11->N = VecAddVec(P11->N, N);
     }
+  for (i = 0; i < SplitW * SplitH; i++)
+    V[i].N = VecNormalize(V[i].N);
 } /* End of 'PL6_RndPrimTriMeshEvaNormals' function */
 
 /* Create sphere function.

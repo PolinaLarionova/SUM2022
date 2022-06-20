@@ -1,6 +1,6 @@
 /* FILE       : u_g3dm.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 17.06.2022
+ * LAST UPDATE: 18.06.2022
  * PURPOSE    : 3D animation project.
  */
 
@@ -28,7 +28,7 @@ static VOID PL6_UnitInit( pl6UNIT_G3DM *Uni, pl6ANIM *Ani )
   PL6_RndPrimsLoad(&Uni->G3dm[0], "bin/models/Flower.g3dm");
   Uni->G3dm[0].Trans = MatrMulMatr(MatrScale(VecSet1(0.2)), MatrTranslate(VecSet(-2, 0, 2)));
   PL6_RndPrimsLoad(&Uni->G3dm[1], "bin/models/sova30.g3dm");
-  Uni->G3dm[1].Trans = MatrMulMatr(MatrScale(VecSet1(1)), MatrTranslate(VecSet(0, 4, 0)));
+  Uni->G3dm[1].Trans = MatrMulMatr(MatrScale(VecSet1(1)), MatrTranslate(VecSet(0, 4, -5)));
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_G3dm inter frame events handle function.

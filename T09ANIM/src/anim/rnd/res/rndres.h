@@ -1,6 +1,6 @@
 /* FILE NAME  : rndres.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 16.06.2022
+ * LAST UPDATE: 20.06.2022
  * PURPOSE    : 3D animation project.
  *              Render subsystem implementation module.
  *              Rendering resourse handle declaration module.
@@ -117,6 +117,19 @@ INT PL6_RndTexAddFromFile( CHAR *FileName );
  *   (INT) texture table index or -1 if error is occured.
  */
 INT PL6_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *ImageData );
+
+/* Add texture by OpenGL low-level format to stock function.
+ * ARGUMENTS:
+ *   - texture name:
+ *       CHAR *Name;
+ *   - texture size in pixels:
+ *       INT W, H;
+ *   - OpenGL texture element data type:
+ *       INT GLType;
+ * RETURNS:
+ *   (INT) texture stock number (0 if error is occured).
+ */
+INT PL6_RndTexAddFmt( CHAR *Name, INT W, INT H, INT GLType );
 
 /***
  * Material handle function group

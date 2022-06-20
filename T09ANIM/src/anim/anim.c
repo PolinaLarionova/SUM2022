@@ -83,10 +83,8 @@ VOID PL6_AnimRender( VOID )
     PL6_Anim.Units[i]->Response(PL6_Anim.Units[i], &PL6_Anim);
 
   PL6_RndStart();
-
   for (i = 0; i < PL6_Anim.NumOfUnits; i++)
     PL6_Anim.Units[i]->Render(PL6_Anim.Units[i], &PL6_Anim);
-
   PL6_RndEnd();
 } /* End of 'PL6_AnimRender' function */
 

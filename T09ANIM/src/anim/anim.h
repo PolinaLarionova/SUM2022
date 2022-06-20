@@ -1,6 +1,6 @@
 /* FILE       : anim.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 10.06.2022
+ * LAST UPDATE: 17.06.2022
  * PURPOSE    : 3D animation project.
  *              .
  */

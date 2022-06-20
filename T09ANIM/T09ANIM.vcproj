@@ -237,7 +237,15 @@
 						>
 					</File>
 					<File
+						RelativePath=".\src\anim\rnd\rndlight.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\rnd\rndprim.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndtrgt.c"
 						>
 					</File>
 					<Filter

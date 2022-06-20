@@ -1,6 +1,6 @@
 /* FILE NAME: mth.h
  * PROGRAMMER: PL6
-* DATE: 17.06.2022
+* DATE: 18.06.2022
 * PURPOSE: 3D math implementation module.
  */
 #ifndef __mth_h_

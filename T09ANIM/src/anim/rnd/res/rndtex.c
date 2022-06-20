@@ -1,6 +1,6 @@
  /* FILE NAME  : rndtex.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 16.06.2022
+ * LAST UPDATE: 20.06.2022
  * PURPOSE    : 3D animation project.
  *              Render subsystem implementation module.
  *              Rendering resourse handle implementation module.
@@ -188,5 +188,41 @@ INT PL6_RndTexAddFromFile( CHAR *FileName )
   }
   return n;
 } /* End of 'PL6_RndTexAddFromFile' function */
+
+/* Add texture by OpenGL low-level format to stock function.
+ * ARGUMENTS:
+ *   - texture name:
+ *       CHAR *Name;
+ *   - texture size in pixels:
+ *       INT W, H;
+ *   - OpenGL texture element data type:
+ *       INT GLType;
+ * RETURNS:
+ *   (INT) texture stock number (0 if error is occured).
+ */
+INT PL6_RndTexAddFmt( CHAR *Name, INT W, INT H, INT GLType )
+{
+  if (PL6_RndTexturesSize >= PL6_MAX_TEXTURES)
+    return -1;
+  /* Setup OpenGL texture */
+  glGenTextures(1, &PL6_RndTextures[PL6_RndTexturesSize].TexId);
+  glBindTexture(GL_TEXTURE_2D, PL6_RndTextures[PL6_RndTexturesSize].TexId);
+
+  glTexStorage2D(GL_TEXTURE_2D, 1, GLType, W, H);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  /* Add to stock */
+  PL6_RndTextures[PL6_RndTexturesSize].W = W;
+  PL6_RndTextures[PL6_RndTexturesSize].H = H;
+  strncpy(PL6_RndTextures[PL6_RndTexturesSize].Name, Name, PL6_STR_MAX - 1);
+  return PL6_RndTexturesSize++;
+} /* End of 'PL6_RndTexAddFmt' function */
+
 
 /* END OF 'rndtex.c' FILE */

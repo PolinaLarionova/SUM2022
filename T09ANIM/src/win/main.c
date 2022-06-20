@@ -1,6 +1,6 @@
 /* FILE       : main.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 08.06.2022
+ * LAST UPDATE: 18.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */

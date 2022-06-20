@@ -1,6 +1,6 @@
 /* FILE       : rndbase.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 09.06.2022
+ * LAST UPDATE: 20.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -86,7 +86,10 @@ VOID PL6_RndInit( HWND hWnd )
 
   glEnable(GL_PRIMITIVE_RESTART);
   glPrimitiveRestartIndex(-1);
+
   PL6_RndResInit();
+  PL6_RndLightInit();
+  PL6_RndTargetInit();
 }/* End of 'PL6_RndInit' function */
 
 /* Rendering system deinitialization function.
@@ -95,6 +98,8 @@ VOID PL6_RndInit( HWND hWnd )
  */
 VOID PL6_RndClose( VOID )
 {
+  PL6_RndLightClose();
+  PL6_RndTargetClose();
   PL6_RndResClose();
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(PL6_hRndGLRC);
@@ -109,11 +114,12 @@ VOID PL6_RndClose( VOID )
  */
 VOID PL6_RndResize( INT W, INT H )
 {
-  glViewport(0, 0, W, H);
+  /* glViewport(0, 0, W, H); */
   /* setup */
   PL6_RndFrameW = W;
   PL6_RndFrameH = H;
   PL6_RndProjSet();
+  PL6_RndTargetResize(W, H);
 }/* End of 'PL6_RndResize' function */
 
 /* Setup rendering projection function.
@@ -159,11 +165,13 @@ VOID PL6_RndCopyFrame( VOID )
 VOID PL6_RndCamSet( VEC Loc, VEC At, VEC Up )
 {
   PL6_RndMatrView = MatrView(Loc, At, Up);
+
   PL6_RndCamLoc = Loc;
   PL6_RndCamAt = At;
   PL6_RndCamRight = VecSet(PL6_RndMatrView.A[0][0], PL6_RndMatrView.A[1][0], PL6_RndMatrView.A[2][0]);
   PL6_RndCamUp = VecSet(PL6_RndMatrView.A[0][1], PL6_RndMatrView.A[1][1], PL6_RndMatrView.A[2][1]);
   PL6_RndCamDir = VecSet(-PL6_RndMatrView.A[0][2], -PL6_RndMatrView.A[1][2], -PL6_RndMatrView.A[2][2]);
+
   PL6_RndMatrVP = MatrMulMatr(PL6_RndMatrView, PL6_RndMatrProj);
 } /* End of 'PL6_RndCamSet' function */
 
@@ -180,7 +188,8 @@ VOID PL6_RndStart( VOID )
     UpdateTime = PL6_Anim.GlobalTime;
     PL6_RndShdUpdate();
   }
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  PL6_RndTargetStart();
+  /* glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); */
 } /* End of 'PL6_RndStart' function */
 
 /* Rendering system end frame drawing function.
@@ -189,7 +198,8 @@ VOID PL6_RndStart( VOID )
  */
 VOID PL6_RndEnd( VOID )
 {
-  glFinish();
+  /* glFinish(); */
+  PL6_RndTargetEnd();
 } /* End of 'PL6_RndEnd' function */
 
 /* END OF 'rndbase.c' FILE */
