@@ -89,6 +89,7 @@ static UINT PL6_RndShdLoad( CHAR *FileNamePrefix )
   {
     {"VERT", GL_VERTEX_SHADER, 0},
     {"FRAG", GL_FRAGMENT_SHADER, 0},
+    {"GEOM", GL_GEOMETRY_SHADER, 0}
   };
   INT res, i, NoofS = sizeof(shd) / sizeof(shd[0]);
   UINT prg;
@@ -102,6 +103,8 @@ static UINT PL6_RndShdLoad( CHAR *FileNamePrefix )
 
     /* Load shader text from file */
     txt = PL6_RndLoadTextFromFile(Buf);
+    if (txt == NULL && i > 1)
+      continue;
     if (txt == NULL)
     {
       PL6_RndShdLog(FileNamePrefix, shd[i].Name, "Error load file");

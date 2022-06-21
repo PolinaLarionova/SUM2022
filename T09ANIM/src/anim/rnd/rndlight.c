@@ -1,6 +1,6 @@
 /* FILE       : rndlight.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 20.06.2022
+ * LAST UPDATE: 21.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -70,17 +70,15 @@ VOID PL6_RndLightClose( VOID )
 VOID PL6_RndLightShadow( VOID )
 {
   INT i;
-  FLT depth = 1, size = 30;
+  FLT depth = 1, size = 30, far_dist = 600;
   MATR SaveRndMatrView, SaveRndMatrProj;
   VEC
+    poi,
     SaveRndCamLoc,
     SaveRndCamAt,
     SaveRndCamRight,
     SaveRndCamUp,
     SaveRndCamDir;
-
-  glBindFramebuffer(GL_FRAMEBUFFER, PL6_RndShadowFBO);
-  glClearBufferfv(GL_DEPTH, 0, &depth);
 
   /* Save camera parameters */
   SaveRndMatrView = PL6_RndMatrView;
@@ -91,16 +89,23 @@ VOID PL6_RndLightShadow( VOID )
   SaveRndCamUp = PL6_RndCamUp;
   SaveRndCamDir = PL6_RndCamDir;
 
-  PL6_RndMatrView = MatrView(VecAddVec(PL6_RndCamAt, VecMulNum(PL6_RndLightDir, 30)), PL6_RndCamAt, VecSet(0, 1, 0));
-  PL6_RndMatrProj = MatrOrtho(-size, size, -size, size, 0, 100);
-  PL6_RndMatrVP = MatrMulMatr(PL6_RndMatrView, PL6_RndMatrProj);
-  PL6_RndShadowMatr = PL6_RndMatrProj;
+  glBindFramebuffer(GL_FRAMEBUFFER, PL6_RndShadowFBO);
+  glClearBufferfv(GL_DEPTH, 0, &depth);
+  glViewport(0, 0, PL6_RND_SHADOW_MAP_SIZE, PL6_RND_SHADOW_MAP_SIZE);
 
+  poi = PL6_RndCamAt;
+  PL6_RndMatrProj = MatrOrtho(-size, size, -size, size, -size, far_dist);
+  PL6_RndCamSet(VecAddVec(poi, PL6_RndLightDir), poi, VecSet(0, 1, 0));
+  PL6_RndShadowMatr = PL6_RndMatrVP;
+
+  glEnable(GL_POLYGON_OFFSET_FILL);
+  glPolygonOffset(4, 4);
   PL6_RndShadowPassFlag = TRUE;
   /* Render all units */
   for (i = 0; i < PL6_Anim.NumOfUnits; i++)
     PL6_Anim.Units[i]->Render(PL6_Anim.Units[i], &PL6_Anim);
   PL6_RndShadowPassFlag = FALSE;
+  glDisable(GL_POLYGON_OFFSET_FILL);
 
   /* Restore camera parameters */
   PL6_RndMatrView = SaveRndMatrView;

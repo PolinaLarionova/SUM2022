@@ -1,6 +1,6 @@
 /* FILE       : u_g3dm.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 18.06.2022
+ * LAST UPDATE: 21.06.2022
  * PURPOSE    : 3D animation project.
  */
 
@@ -24,11 +24,21 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_G3DM *Uni, pl6ANIM *Ani )
 {
+  INT i;
+  pl6MATERIAL mtl;
+
   Uni->NumOfpl6Prims = 2;
   PL6_RndPrimsLoad(&Uni->G3dm[0], "bin/models/Flower.g3dm");
   Uni->G3dm[0].Trans = MatrMulMatr(MatrScale(VecSet1(0.2)), MatrTranslate(VecSet(-2, 0, 2)));
+
   PL6_RndPrimsLoad(&Uni->G3dm[1], "bin/models/sova30.g3dm");
-  Uni->G3dm[1].Trans = MatrMulMatr(MatrScale(VecSet1(1)), MatrTranslate(VecSet(0, 4, -5)));
+  Uni->G3dm[1].Trans = MatrTranslate(VecSet(0, 4, 0));
+  mtl = PL6_RndMtlGetDef();
+  strcpy(mtl.Name, "Sova Material");
+  mtl.ShdNo = PL6_RndShdAdd("sova");
+  //mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/sky2.g24");
+  for (i = 0; i < Uni->G3dm[1].NumOfPrims; i++)
+    Uni->G3dm[1].Prims[i].MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_G3dm inter frame events handle function.
@@ -41,7 +51,7 @@ static VOID PL6_UnitInit( pl6UNIT_G3DM *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitResponse( pl6UNIT_G3DM *Uni, pl6ANIM *Ani )
 {
-  //Uni->G3dm[1].Trans = MatrMulMatr(Uni->G3dm[1].Trans, MatrRotateY(180 * sin(Ani->GlobalTime / 10000)));
+  //Uni->G3dm[1].Trans = MatrMulMatr(Uni->G3dm[1].Trans, MatrRotateY(180 * sin(Ani->DeltaTime / 10)));
 } /* End of 'PL6_UnitResponse' function */
 
 /* Unit_G3dm render function.

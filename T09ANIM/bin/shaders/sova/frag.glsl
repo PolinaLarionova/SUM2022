@@ -20,9 +20,6 @@ uniform float Ph;
 layout(binding = 0) uniform sampler2D Texture0;
 uniform bool IsTexture0;
 
-layout(binding = 8) uniform sampler2D ShadowMap;
-uniform mat4 ShadowMatr;
-
 uniform float AddonI0, AddonI1;
 
 vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
@@ -33,7 +30,7 @@ vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
   N = faceforward(N, V, N);
 
   // ambient
-  vec3 color = min(Ka, 0.1);
+  vec3 color = Ka;
 
   // diffuse
   float nl = dot(N, L);
@@ -56,19 +53,8 @@ vec3 Shade( vec3 P, vec3 N, vec3 L, vec3 LColor )
 
 void main( void )
 {
-  float sh = 1;
-  vec4 p = ShadowMatr * vec4(DrawPos, 1) * 0.5 + 0.5;
-
-  if (p.x >= 0 && p.x <= 1 &&
-      p.y >= 0 && p.y <= 1 &&
-      p.z >= 0 && p.z <= 1)
-  {
-    float z = texture(ShadowMap, p.xy).r;
-
-    if (p.z > z)
-      sh = 0.30;
-  }
-
+  if (AddonI1 == 2)
+   discard;
   vec3 N = normalize(DrawNormal);    
-  OutColor = vec4(sh * Shade(DrawPos, N, normalize(LightDir), LightColor), 1);
+  OutColor = vec4(Shade(DrawPos, N, LightDir, LightColor), 1);
 }

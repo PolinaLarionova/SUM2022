@@ -127,6 +127,9 @@ static VOID PL6_UnitRender( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
 {
   static CHAR Buf[102];
 
+  if (PL6_RndShadowPassFlag)
+    return;
+
   sprintf(Buf, "%lf (%f %f %f %f ) %i", Ani->FPS, Ani->JX, Ani->JY, Ani->JZ, Ani->JR, Ani->JPov);
   //SetWindowText(Ani->hWnd, Buf);
   PL6_RndFntDraw(Buf, VecSet(2, 2, 2), 1);

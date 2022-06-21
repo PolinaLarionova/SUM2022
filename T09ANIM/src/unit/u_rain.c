@@ -1,0 +1,96 @@
+/* FILE       : u_rain.c
+ * PROGRAMMER : PL6
+ * LAST UPDATE: 21.06.2022
+ * PURPOSE    : 3D animation project.
+ */
+
+#include "pl6.h"
+
+/* Animation unit reprentation type */
+typedef struct
+{
+  UNIT_BASE_FIELDS;
+  VEC Pos;
+  pl6PRIM Rain;
+} pl6UNIT_RAIN;
+
+/* Unit_Rain initialization function.
+ * ARGUMENTS:
+ *   - self-pointer to unit object:
+ *       pl6UNIT_RAIN *Uni;
+ *   - animation context:
+ *       pl6ANIM *Ani;
+ * RETURNS: None.
+ */
+static VOID PL6_UnitInit( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
+{
+  pl6MATERIAL mtl;
+
+  Uni->Pos = VecSet(0, 0, 0);
+  PL6_RndPrimCreateSphere(&Uni->Rain, Uni->Pos, 50, GRID_W, GRID_H);
+
+  mtl = PL6_RndMtlGetDef();
+  strcpy(mtl.Name, "Sphere Material");
+  mtl.ShdNo = PL6_RndShdAdd("sky");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/sky2.g24");
+  Uni->Rain.MtlNo = PL6_RndMtlAdd(&mtl);
+} /* End of 'PL6_UnitInit' function */
+
+/* Unit_Rain inter frame events handle function.
+ * ARGUMENTS:
+ *   - self-pointer to unit object:
+ *       pl6UNIT_RAIN *Uni;
+ *   - animation context:
+ *       pl6ANIM *Ani;
+ * RETURNS: None.
+ */
+static VOID PL6_UnitResponse( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
+{
+} /* End of 'PL6_UnitResponse' function */
+
+/* Unit_Rain render function.
+ * ARGUMENTS:
+ *   - self-pointer to unit object:
+ *       pl6UNIT_RAIN *Uni;
+ *   - animation context:
+ *       pl6ANIM *Ani;
+ * RETURNS: None.
+ */
+static VOID PL6_UnitRender( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
+{
+  PL6_RndPrimDraw(&Uni->Rain, MatrIdentity());
+} /* End of 'PL6_UnitRender' function */
+
+/* Unit_Rain deinitialization function.
+ * ARGUMENTS:
+ *   - self-pointer to unit object:
+ *       pl6UNIT_RAIN *Uni;
+ *   - animation context:
+ *       pl6ANIM *Ani;
+ * RETURNS: None.
+ */
+static VOID PL6_UnitClose( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
+{
+  PL6_RndPrimFree(&Uni->Rain);
+} /* End of 'PL6_UnitClose' function */
+
+/* Unit_Rain create function.
+ * ARGUMENTS:
+ *   - none;
+ * RETURNS: (pl6UNIT) unit.
+ */
+pl6UNIT * PL6_UnitCreateRain( VOID )
+{
+  pl6UNIT *Uni;
+
+  if ((Uni = PL6_AnimUnitCreate(sizeof(pl6UNIT_RAIN))) == NULL)
+    return NULL;
+
+  Uni->Init = (VOID *)PL6_UnitInit;
+  Uni->Close = (VOID *)PL6_UnitClose;
+  Uni->Response = (VOID *)PL6_UnitResponse;
+  Uni->Render = (VOID *)PL6_UnitRender;
+  return Uni;
+} /* End of 'PL6_UnitCreateRain' function */
+
+/* END OF 'u_rain.c' FILE */

@@ -1,6 +1,6 @@
 /* FILE       : rndtrgt.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 20.06.2022
+ * LAST UPDATE: 21.06.2022
  * PURPOSE    : 3D animation project.
  */
 
@@ -154,7 +154,6 @@ VOID PL6_RndTargetStart( VOID )
   FLT col[PL6_RND_TARGETS][4] = {{0, 0.3, 0.6, 1}}, depth = 1;
 
   PL6_RndLightShadow();
-  glPolygonOffset(4, 2);
 
   glBindFramebuffer(GL_FRAMEBUFFER, PL6_RndTargetFBO);
   for (i = 0; i < PL6_RND_TARGETS; i++)

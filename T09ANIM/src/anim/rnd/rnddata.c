@@ -29,6 +29,6 @@ MATR
   PL6_RndMatrProj, /* Projection coordinate system matrix */
   PL6_RndMatrVP;   /* Stored (View * Proj) matrix */
 
-INT PL6_RndShadersAddonI[2];
+INT PL6_RndShadersAddonI[5];
 
 /* END OF 'rnddata.c' FILE */

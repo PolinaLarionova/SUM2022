@@ -314,6 +314,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\unit\u_rain.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\unit\units.h"
 					>
 				</File>

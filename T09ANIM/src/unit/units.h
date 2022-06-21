@@ -20,6 +20,13 @@ pl6UNIT * PL6_UnitCreateLand( VOID );
  */
 pl6UNIT * PL6_UnitCreateG3dm( VOID );
 
+/* Unit_Rain create function.
+ * ARGUMENTS:
+ *   - none;
+ * RETURNS: (pl6UNIT) unit.
+ */
+pl6UNIT * PL6_UnitCreateRain( VOID );
+
 #endif /* __unit_h_ */
 
 /* END OF 'unit.h' FILE */

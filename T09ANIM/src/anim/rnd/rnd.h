@@ -1,6 +1,6 @@
 /* FILE       : rnd.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 20.06.2022
+ * LAST UPDATE: 21.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -71,7 +71,7 @@ typedef struct tagpl6PRIM
   INT MtlNo;        /* Material number in material array */
 } pl6PRIM;
 
-extern INT PL6_RndShadersAddonI[2];
+extern INT PL6_RndShadersAddonI[5];
 
 /***
  * Primitive collection handle
@@ -374,7 +374,7 @@ VOID PL6_RndTargetResize( INT W, INT H );
  ***/
 
 /* Shadow map size*/
-#define PL6_RND_SHADOW_MAP_SIZE 256
+#define PL6_RND_SHADOW_MAP_SIZE 9000
 
 /* Shadow frame buffer identifier */
 extern INT PL6_RndShadowFBO;
