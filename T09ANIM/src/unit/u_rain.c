@@ -1,16 +1,18 @@
 /* FILE       : u_rain.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 21.06.2022
+ * LAST UPDATE: 22.06.2022
  * PURPOSE    : 3D animation project.
  */
 
 #include "pl6.h"
 
+#define PL6_NUM_OF_DROPS 40
+
 /* Animation unit reprentation type */
 typedef struct
 {
   UNIT_BASE_FIELDS;
-  VEC Pos;
+  VEC Pos[PL6_NUM_OF_DROPS];
   pl6PRIM Rain;
 } pl6UNIT_RAIN;
 
@@ -24,15 +26,22 @@ typedef struct
  */
 static VOID PL6_UnitInit( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
 {
+  INT i;
+  pl6VERTEX 
+    V[] =
+  {
+    {{0, 0, 0}, {0, 0}, {0, 1, 0}, {1, 1, 1, 1}},
+  };
   pl6MATERIAL mtl;
 
-  Uni->Pos = VecSet(0, 0, 0);
-  PL6_RndPrimCreateSphere(&Uni->Rain, Uni->Pos, 50, GRID_W, GRID_H);
+  for (i = 0; i < PL6_NUM_OF_DROPS; i++)
+    Uni->Pos[i] = VecSet(Rnd1() * 10, Rnd0() * 10, Rnd1() * 10);
 
+  PL6_RndPrimCreate(&Uni->Rain, PL6_RND_PRIM_POINTS, V, 1, NULL, 0);
   mtl = PL6_RndMtlGetDef();
-  strcpy(mtl.Name, "Sphere Material");
-  mtl.ShdNo = PL6_RndShdAdd("sky");
-  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/sky2.g24");
+  strcpy(mtl.Name, "Rain Material");
+  mtl.ShdNo = PL6_RndShdAdd("rain");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/drop2.g32");
   Uni->Rain.MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 
@@ -46,6 +55,11 @@ static VOID PL6_UnitInit( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitResponse( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
 {
+  INT i;
+
+  for (i = 0; i < PL6_NUM_OF_DROPS; i++)
+    if((Uni->Pos[i].Y -= Ani->DeltaTime * 1) <= 0)
+      Uni->Pos[i].Y = 10;
 } /* End of 'PL6_UnitResponse' function */
 
 /* Unit_Rain render function.
@@ -58,7 +72,10 @@ static VOID PL6_UnitResponse( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitRender( pl6UNIT_RAIN *Uni, pl6ANIM *Ani )
 {
-  PL6_RndPrimDraw(&Uni->Rain, MatrIdentity());
+  INT i;
+
+  for (i = 0; i < PL6_NUM_OF_DROPS; i++)
+    PL6_RndPrimDraw(&Uni->Rain, MatrTranslate(Uni->Pos[i]));
 } /* End of 'PL6_UnitRender' function */
 
 /* Unit_Rain deinitialization function.

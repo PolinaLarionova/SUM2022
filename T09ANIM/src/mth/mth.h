@@ -1,6 +1,6 @@
 /* FILE NAME: mth.h
  * PROGRAMMER: PL6
-* DATE: 18.06.2022
+* DATE: 22.06.2022
 * PURPOSE: 3D math implementation module.
  */
 #ifndef __mth_h_
@@ -17,6 +17,8 @@
 /* Degrees to radians conversion */
 #define D2R(A) ((A) * (PI / 180.0))
 #define R2D(A) ((A) * (180.0 / PI))
+#define Rnd0() ((rand() % 100 + 1) / 100.0)
+#define Rnd1() ((rand() % 101) / 100.0)
 #define Degree2Radian(a) D2R(a)
 
 #define COM_MIN(A, B) ((A) < (B) ? (A) : (B))

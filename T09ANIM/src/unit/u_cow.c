@@ -1,6 +1,6 @@
 /* FILE       : u_cow.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 18.06.2022
+ * LAST UPDATE: 22.06.2022
  * PURPOSE    : 3D animation project.
  *              
  */
@@ -11,8 +11,6 @@
 typedef struct
 {
   UNIT_BASE_FIELDS;
-  VEC Pos, V;
-  DBL Rot;
   pl6PRIM Cow;
 } pl6UNIT_COW;
 
@@ -28,8 +26,6 @@ static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
   pl6MATERIAL mtl;
 
-  Uni->V = VecSet(-1, 0, 0);
-  Uni->Pos = VecSet(0, 0, 0);
   PL6_RndPrimLoad(&Uni->Cow, "bin/models/cow.obj");
 
   mtl = PL6_RndMtlGetDef();
@@ -49,13 +45,6 @@ static VOID PL6_UnitInit( pl6UNIT_COW *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitResponse( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
-  static DBL R = 0;
-
-  Uni->Rot = 20 * Ani->JX * Ani->DeltaTime;
-  R += 20 * Ani->JX * Ani->DeltaTime;
-  Uni->Cow.Trans = MatrMulMatr(MatrScale(VecSet1(0.1)), MatrRotateY(R));
-  Uni->V = VectorTransform(Uni->V, MatrRotateY(Uni->Rot));
-  Uni->Pos = VecAddVec(Uni->Pos, VecMulNum(Uni->V, Ani->JY * Ani->DeltaTime));
 } /* End of 'PL6_UnitResponse' function */
 
 /* Unit_Cow render function.
@@ -68,7 +57,7 @@ static VOID PL6_UnitResponse( pl6UNIT_COW *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitRender( pl6UNIT_COW *Uni, pl6ANIM *Ani )
 {
-  PL6_RndPrimDraw(&Uni->Cow, MatrMulMatr(MatrRotateY(Uni->Rot), MatrTranslate(Uni->Pos)));
+  PL6_RndPrimDraw(&Uni->Cow, MatrIdentity());
 }/* End of 'PL6_UnitRender' function */
 
 /* Unit_Cow deinitialization function.

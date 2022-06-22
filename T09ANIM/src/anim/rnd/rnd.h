@@ -1,6 +1,6 @@
 /* FILE       : rnd.h
  * PROGRAMMER : PL6
- * LAST UPDATE: 21.06.2022
+ * LAST UPDATE: 22.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -84,6 +84,10 @@ typedef struct tagpl6PRIMS
   pl6PRIM *Prims; /* Array of primitives */
   MATR Trans;     /* Common transformation matrix */
 } pl6PRIMS;
+
+/* Load model transformation matrix */
+extern MATR PL6_RndPrinsLoadTransform;
+extern INT PL6_RndNumberOfShader;
 
 /* Rendering system initialization function.
  * ARGUMENTS: None.

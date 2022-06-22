@@ -1,6 +1,6 @@
 /* FILE NAME: rndprims.c
  * PROGRAMMER: PL6
- * DATE: 17.06.2022
+ * DATE: 22.06.2022
  * PURPOSE: 3D animation primitive collection handle module.
  */
 
@@ -8,6 +8,18 @@
 #include <string.h>
 
 #include "pl6.h"
+
+/* Load model transformation matrix */
+MATR PL6_RndPrinsLoadTransform =
+{
+  {
+    {1, 0, 0, 0},
+    {0, 1, 0, 0},
+    {0, 0, 1, 0},
+  }
+};
+
+INT PL6_RndNumberOfShader = 0;
 
 /* Create array of primitives function.
 * ARGUMENTS:
@@ -102,6 +114,9 @@ BOOL PL6_RndPrimsLoad( pl6PRIMS *Prs, CHAR *FileName )
   DWORD NumOfMaterials;
   DWORD NumOfTextures;
   DWORD p, m, t;
+  MATR mt = PL6_RndPrinsLoadTransform, mtinv = MatrTranspose(MatrInverse(PL6_RndPrinsLoadTransform));
+
+  PL6_RndPrinsLoadTransform = MatrIdentity();
 
   memset(Prs, 0, sizeof(pl6PRIMS));
   /* Open file */
@@ -148,6 +163,7 @@ BOOL PL6_RndPrimsLoad( pl6PRIMS *Prs, CHAR *FileName )
     DWORD NumOfVertexes;
     DWORD NumOfFacetIndexes;
     DWORD MtlNo;
+    DWORD v;
     pl6VERTEX *V;
     INT *Ind;
 
@@ -155,6 +171,14 @@ BOOL PL6_RndPrimsLoad( pl6PRIMS *Prs, CHAR *FileName )
     NumOfFacetIndexes = *(DWORD *)ptr, ptr += 4;
     MtlNo = *(DWORD *)ptr, ptr += 4;
     V = (pl6VERTEX *)ptr, ptr += sizeof(pl6VERTEX) * NumOfVertexes;
+
+    /* Transform vertexes */
+    for (v = 0; v < NumOfVertexes; v++)
+    {
+      V[v].P = PointTransform(V[v].P, mt);
+      V[v].N = VecNormalize(PointTransform(V[v].N, mtinv));
+    }
+
     Ind = (INT *)ptr, ptr += sizeof(INT) * NumOfFacetIndexes;
     PL6_RndPrimCreate(&Prs->Prims[p], PL6_RND_PRIM_TRIMESH, V, NumOfVertexes, Ind, NumOfFacetIndexes);
     Prs->Prims[p].MtlNo = PL6_RndMaterialsSize + MtlNo;
@@ -184,10 +208,12 @@ BOOL PL6_RndPrimsLoad( pl6PRIMS *Prs, CHAR *FileName )
     mtl.Ks = fmat->Ks;
     mtl.Ph = fmat->Ph;
     mtl.Trans = fmat->Trans;
+    mtl.ShdNo = PL6_RndNumberOfShader;
     for (t = 0; t < 8; t++)
       mtl.Tex[t] = fmat->Tex[t] == -1 ? -1 : PL6_RndTexturesSize + fmat->Tex[t];
     PL6_RndMtlAdd(&mtl);
   }
+  PL6_RndNumberOfShader = 0;
 
   /* Load textures */
   for (t = 0; t < NumOfTextures; t++)

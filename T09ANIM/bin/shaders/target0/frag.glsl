@@ -22,5 +22,5 @@ void main( void )
   //  for (int j = 0; j < 3; j++)
    //   A[i * 3 + j] = texelFetch(Texture0, sc + ivec2(j - 1, i - 1), 0);
 
-  OutColor = tc.rgba;
+  OutColor = vec4(tc.rgb, 1);
 }

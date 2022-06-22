@@ -111,7 +111,7 @@ static VOID PL6_UnitResponse( pl6UNIT_CONTROL *Uni, pl6ANIM *Ani )
                                             MatrRotateY(Azimuth),
                                             MatrTranslate(PL6_RndCamAt))),
                                  PL6_RndCamAt,
-                                 VecSet(0, 1, 0));
+                                 VecSet(0, 1, 0)); 
   }
 }/* End of 'PL6_UnitResponse' function */
 

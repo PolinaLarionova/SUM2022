@@ -1,6 +1,6 @@
 /* FILE       : main.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 18.06.2022
+ * LAST UPDATE: 22.06.2022
  * PURPOSE    : 3D animation project.
  *              Startup module.
  */
@@ -53,11 +53,13 @@ INT WINAPI WinMain( HINSTANCE hIstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
 
   UpdateWindow(hWnd);
 
-  PL6_AnimUnitAdd(PL6_UnitCreateCow());
+  //PL6_AnimUnitAdd(PL6_UnitCreateCow());
   PL6_AnimUnitAdd(PL6_UnitCreateLand());
   PL6_AnimUnitAdd(PL6_UnitCreateBall());
   PL6_AnimUnitAdd(PL6_UnitCreateG3dm());
+  PL6_AnimUnitAdd(PL6_UnitCreateGoose());
   PL6_AnimUnitAdd(PL6_UnitCreateControl());
+  //PL6_AnimUnitAdd(PL6_UnitCreateRain());
 
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

@@ -1,6 +1,6 @@
 /* FILE NAME: rndshd.c
  * PROGRAMMER: PL6
- * DATE: 14.06.2022
+ * DATE: 22.06.2022
  * PURPOSE: 3D animation rendering shader handle functions module.
  */
 
@@ -89,7 +89,7 @@ static UINT PL6_RndShdLoad( CHAR *FileNamePrefix )
   {
     {"VERT", GL_VERTEX_SHADER, 0},
     {"FRAG", GL_FRAGMENT_SHADER, 0},
-    {"GEOM", GL_GEOMETRY_SHADER, 0}
+    {"GEOM", GL_GEOMETRY_SHADER, 0},
   };
   INT res, i, NoofS = sizeof(shd) / sizeof(shd[0]);
   UINT prg;
@@ -103,10 +103,11 @@ static UINT PL6_RndShdLoad( CHAR *FileNamePrefix )
 
     /* Load shader text from file */
     txt = PL6_RndLoadTextFromFile(Buf);
-    if (txt == NULL && i > 1)
-      continue;
     if (txt == NULL)
     {
+      if (i > 1)
+        continue;
+
       PL6_RndShdLog(FileNamePrefix, shd[i].Name, "Error load file");
       is_ok = FALSE;
       break;

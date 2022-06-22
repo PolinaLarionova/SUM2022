@@ -140,6 +140,10 @@ VOID PL6_RndPrimDraw( pl6PRIM *Pr, MATR World )
     glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
   if ((loc = glGetUniformLocation(RndProgId, "CamLoc")) != -1)
     glUniform3fv(loc, 1, &PL6_RndCamLoc.X);
+  if ((loc = glGetUniformLocation(RndProgId, "CamRight")) != -1)
+    glUniform3fv(loc, 1, &PL6_RndCamRight.X);
+  if ((loc = glGetUniformLocation(RndProgId, "CamUp")) != -1)
+    glUniform3fv(loc, 1, &PL6_RndCamUp.X);
   if ((loc = glGetUniformLocation(RndProgId, "Time")) != -1)
     glUniform1f(loc, PL6_Anim.Time);
   if ((loc = glGetUniformLocation(RndProgId, "AddonI0")) != -1)

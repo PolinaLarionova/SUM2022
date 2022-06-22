@@ -32,7 +32,7 @@ static VOID PL6_UnitInit( pl6UNIT_G3DM *Uni, pl6ANIM *Ani )
   Uni->G3dm[0].Trans = MatrMulMatr(MatrScale(VecSet1(0.2)), MatrTranslate(VecSet(-2, 0, 2)));
 
   PL6_RndPrimsLoad(&Uni->G3dm[1], "bin/models/sova30.g3dm");
-  Uni->G3dm[1].Trans = MatrTranslate(VecSet(0, 4, 0));
+  Uni->G3dm[1].Trans = MatrTranslate(VecSet(0, 4, -2));
   mtl = PL6_RndMtlGetDef();
   strcpy(mtl.Name, "Sova Material");
   mtl.ShdNo = PL6_RndShdAdd("sova");

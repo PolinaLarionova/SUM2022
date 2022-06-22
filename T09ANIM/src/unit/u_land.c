@@ -1,6 +1,6 @@
 /* FILE       : u_land.c
  * PROGRAMMER : PL6
- * LAST UPDATE: 17.06.2022
+ * LAST UPDATE: 22.06.2022
  * PURPOSE    : 3D animation project.
  *              
  */
@@ -77,8 +77,26 @@ static VOID PL6_LandLoad( pl6UNIT_LAND *Uni, pl6PRIM *Land )
  */
 static VOID PL6_UnitInit( pl6UNIT_LAND *Uni, pl6ANIM *Ani )
 {
-  Uni->Pos = VecSet(-0.5, -0.05, -0.5);
-  PL6_LandLoad(Uni, &Uni->Land);
+  /*PL6_LandLoad(Uni, &Uni->Land);*/
+
+  pl6VERTEX 
+    V[] =
+  {
+    {{50, 0, 50}, {0, 0}, {0, 1, 0}, {0, 1, 0, 1}},
+    {{-50, 0, 50}, {1, 0}, {0, 1, 0}, {0, 1, 0, 1}},
+    {{50, 0, -50}, {0, 1}, {0, 1, 0}, {0, 1, 0, 1}},
+    {{-50, 0, -50}, {1, 1}, {0, 1, 0}, {0, 1, 0, 1}},
+  };
+  INT
+    Ind[] = {0, 1, 2, 2, 1, 3};
+  pl6MATERIAL mtl;
+
+  PL6_RndPrimCreate(&Uni->Land, PL6_RND_PRIM_TRIMESH, V, 4, Ind, 6);
+  mtl = PL6_RndMtlGetDef();
+  strcpy(mtl.Name, "Land Material");
+  //mtl.ShdNo = PL6_RndShdAdd("sky");
+  mtl.Tex[0] = PL6_RndTexAddFromFile("bin/textures/grass1.g24");
+  Uni->Land.MtlNo = PL6_RndMtlAdd(&mtl);
 } /* End of 'PL6_UnitInit' function */
 
 /* Unit_Land render function.
@@ -91,7 +109,11 @@ static VOID PL6_UnitInit( pl6UNIT_LAND *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitRender( pl6UNIT_LAND *Uni, pl6ANIM *Ani )
 {
-  PL6_RndPrimDraw(&Uni->Land, MatrMulMatr(MatrTranslate(Uni->Pos), MatrScale(VecSet(100, 10, 100))));
+  //INT i, j;
+  /*PL6_RndPrimDraw(&Uni->Land, MatrMulMatr(MatrTranslate(Uni->Pos), MatrScale(VecSet(100, 10, 100))));*/
+  //for (i = -2; i <= 2; i++)
+    //for (j = -2; j <= 2; i++)
+  PL6_RndPrimDraw(&Uni->Land, MatrIdentity());
 } /* End of 'PL6_UnitRender' function */
 
 /* Unit_Land deinitialization function.

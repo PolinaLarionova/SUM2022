@@ -7,8 +7,8 @@
 
 #include "pl6.h"
 
-#define GRID_H 30
-#define GRID_W 60
+#define GRID_H 10
+#define GRID_W 20
 
 /* Animation unit reprentation type */
 typedef struct
@@ -62,6 +62,9 @@ static VOID PL6_UnitResponse( pl6UNIT_BALL *Uni, pl6ANIM *Ani )
  */
 static VOID PL6_UnitRender( pl6UNIT_BALL *Uni, pl6ANIM *Ani )
 {
+  if (PL6_RndShadowPassFlag)
+    return;
+
   PL6_RndPrimDraw(&Uni->Ball, MatrIdentity());
 } /* End of 'PL6_UnitRender' function */
 
